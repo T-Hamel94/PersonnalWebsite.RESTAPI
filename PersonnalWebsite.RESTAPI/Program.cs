@@ -1,25 +1,30 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+using PersonnalWebsite.RESTAPI.Data.Context;
+using PersonnalWebsite.RESTAPI.Data.Repo;
+using Srv_PersonnalWebsite;
+
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer());
+builder.Services.AddScoped<IUserRepo, UserRepo>();
 
-var app = builder.Build();
+WebApplication webApp = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (webApp.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    webApp.UseSwagger();
+    webApp.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+webApp.UseHttpsRedirection();
 
-app.UseAuthorization();
+webApp.UseAuthorization();
 
-app.MapControllers();
+webApp.MapControllers();
 
-app.Run();
+webApp.Run();

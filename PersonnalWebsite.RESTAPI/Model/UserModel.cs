@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Srv_PersonnalWebsite.Entity;
 
-namespace Srv_PersonnalWebsite.Entity
+namespace PersonnalWebsite.RESTAPI.Model
 {
-    public class User
+    public class UserModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -16,9 +12,9 @@ namespace Srv_PersonnalWebsite.Entity
         public DateTime CreatedAt { get; set; }
         public DateTime LastModifiedAt { get; set; }
 
-        public User() { }
+        public UserModel() { }
 
-        public User(Guid id, string name, string firstName, string email, int age, DateTime createdAt, DateTime lastModifiedAt)
+        public UserModel(Guid id, string name, string firstName, string email, int age, DateTime createdAt, DateTime lastModifiedAt)
         {
             Id = id;
             Name = name;
@@ -27,6 +23,11 @@ namespace Srv_PersonnalWebsite.Entity
             Age = age;
             CreatedAt = createdAt;
             LastModifiedAt = lastModifiedAt;
+        }
+
+        public User ToEntity()
+        {
+            return new User(Id, Name, FirstName, Email, Age, CreatedAt, LastModifiedAt);
         }
     }
 }
