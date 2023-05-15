@@ -1,4 +1,6 @@
-﻿using Srv_PersonnalWebsite.Entity;
+﻿
+
+using PersonnalWebsite.RESTAPI.Entities;
 
 namespace PersonnalWebsite.RESTAPI.Model
 {

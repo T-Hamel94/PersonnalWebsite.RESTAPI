@@ -1,28 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Model;
-using Srv_PersonnalWebsite;
-using Srv_PersonnalWebsite.Entity;
 
 namespace PersonnalWebsite.RESTAPI.Controllers
 {
+    // Received User from the Service class and returns UserModel
     [Route("api/Users")]
     [ApiController]
     public class UserContoller : ControllerBase
     {
-        private IUserRepo UserRepo;
+        private IUserService _userService;
 
-        public UserContoller (IUserRepo userRepo)
+        public UserContoller (IUserService userService)
         {
-            UserRepo = userRepo;
+            _userService = userService;
         }
 
         // api/users{guid}
         [HttpGet("userID")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<UserModel> Get(Guid id)
+        public ActionResult<UserModel> Get(Guid userID)
         {
-            User userFound = UserRepo.GetUserByID(id);
+            UserModel userFound = _userService.GetUserByID(userID);
 
             if(userFound == null)
             {
@@ -38,7 +38,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         [ProducesResponseType(404)]
         public ActionResult<IEnumerable<UserModel>> Get()
         {
-            IEnumerable<User> users = UserRepo.GetUsers();
+            IEnumerable<UserModel> users = _userService.GetUsers();
 
             if (users == null || users.Count() < 1)
             {
@@ -47,6 +47,5 @@ namespace PersonnalWebsite.RESTAPI.Controllers
 
             return Ok(users);
         }
-
     }
 }

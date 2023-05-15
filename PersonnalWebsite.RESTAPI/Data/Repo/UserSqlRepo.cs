@@ -1,14 +1,16 @@
 ﻿using PersonnalWebsite.RESTAPI.Data.Context;
-using Srv_PersonnalWebsite;
-using Srv_PersonnalWebsite.Entity;
+using PersonnalWebsite.RESTAPI.Data.SQLServer;
+using PersonnalWebsite.RESTAPI.Entities;
+using PersonnalWebsite.RESTAPI.Interfaces;
 
 namespace PersonnalWebsite.RESTAPI.Data.Repo
 {
-    public class UserRepo : IUserRepo
+    // Uses UserSqlDTO and returns User
+    public class UserSqlRepo : IUserRepo
     {
         private ApplicationDbContext _dbContext;
 
-        public UserRepo()
+        public UserSqlRepo()
         {
             _dbContext = DbContextGeneration.GetApplicationDBContext();
         }

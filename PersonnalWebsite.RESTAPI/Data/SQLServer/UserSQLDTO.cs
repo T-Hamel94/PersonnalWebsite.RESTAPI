@@ -1,8 +1,8 @@
-﻿using Srv_PersonnalWebsite.Entity;
+﻿using PersonnalWebsite.RESTAPI.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PersonnalWebsite.RESTAPI.Data
+namespace PersonnalWebsite.RESTAPI.Data.SQLServer
 {
     [Table("Users")]
     public class UserSQLDTO

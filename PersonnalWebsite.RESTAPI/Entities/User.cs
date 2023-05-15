@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PersonnalWebsite.RESTAPI.Model;
 
-namespace Srv_PersonnalWebsite.Entity
+namespace PersonnalWebsite.RESTAPI.Entities
 {
     public class User
     {
@@ -27,6 +23,11 @@ namespace Srv_PersonnalWebsite.Entity
             Age = age;
             CreatedAt = createdAt;
             LastModifiedAt = lastModifiedAt;
+        }
+
+        public UserModel ToModel()
+        {
+            return new UserModel(Id, Name, FirstName, Email, Age, CreatedAt, LastModifiedAt);
         }
     }
 }
