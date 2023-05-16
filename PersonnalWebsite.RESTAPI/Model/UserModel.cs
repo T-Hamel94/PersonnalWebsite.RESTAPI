@@ -7,8 +7,8 @@ namespace PersonnalWebsite.RESTAPI.Model
     public class UserModel
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
         public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Email { get; set; }
         public int Age { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -16,11 +16,11 @@ namespace PersonnalWebsite.RESTAPI.Model
 
         public UserModel() { }
 
-        public UserModel(Guid id, string name, string firstName, string email, int age, DateTime createdAt, DateTime lastModifiedAt)
+        public UserModel(Guid id, string lastName, string firstName, string email, int age, DateTime createdAt, DateTime lastModifiedAt)
         {
             Id = id;
-            Name = name;
             FirstName = firstName;
+            LastName = lastName;
             Email = email;
             Age = age;
             CreatedAt = createdAt;
@@ -29,7 +29,7 @@ namespace PersonnalWebsite.RESTAPI.Model
 
         public User ToEntity()
         {
-            return new User(Id, Name, FirstName, Email, Age, CreatedAt, LastModifiedAt);
+            return new User(Id, LastName, FirstName, Email, Age, CreatedAt, LastModifiedAt);
         }
     }
 }

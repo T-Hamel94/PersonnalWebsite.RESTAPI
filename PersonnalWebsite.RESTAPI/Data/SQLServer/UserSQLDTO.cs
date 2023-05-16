@@ -10,10 +10,10 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
         [Column("UserID")]
         [Key]
         public Guid UserID { get; set; }
-        [Column("Name")]
-        public string Name { get; set; }
         [Column("FirstName")]
         public string FirstName { get; set; }
+        [Column("Name")]
+        public string LastName { get; set; }
         [Column("Email")]
         public string Email { get; set; }
         [Column("Age")]
@@ -25,11 +25,22 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
 
         public UserSQLDTO() { }
 
-        public UserSQLDTO(Guid id, string name, string firstName, string email, int age, DateTime createdAt, DateTime lastModifiedAt)
+        public UserSQLDTO(User user)
+        {
+            UserID = user.Id;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            Email = user.Email;
+            Age = user.Age;
+            CreatedAt = user.CreatedAt;
+            LastModifiedAt = user.LastModifiedAt;
+        }
+
+        public UserSQLDTO(Guid id, string lastName, string firstName, string email, int age, DateTime createdAt, DateTime lastModifiedAt)
         {
             UserID = id;
-            Name = name;
             FirstName = firstName;
+            LastName = lastName;
             Email = email;
             Age = age;
             CreatedAt = createdAt;
@@ -38,7 +49,7 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
 
         public User ToEntity()
         {
-            return new User(UserID, Name, FirstName, Email, Age, CreatedAt, LastModifiedAt);
+            return new User(UserID, LastName, FirstName, Email, Age, CreatedAt, LastModifiedAt);
         }
     }
 }

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PersonnalWebsite.RESTAPI.Data.Context;
-using PersonnalWebsite.RESTAPI.Data.Repo;
+using PersonnalWebsite.RESTAPI.Data.Repo.SQLServer;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Service;
 
@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 
 //Dependency Injections
 builder.Services.AddScoped<IUserRepo, UserSqlRepo>();
-builder.Services.AddScoped<IUserService, UserManipulation>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 WebApplication webApp = builder.Build();
 
