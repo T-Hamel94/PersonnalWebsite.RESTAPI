@@ -1,6 +1,6 @@
 ﻿namespace PersonnalWebsite.RESTAPI.Data.SQLServer
 {
-    public class BlogPostSQLDTO
+    public class BlogPostSQLServer
     {
         public Guid BlogPostID { get; set; }
         public int BlogPostLanguageID { get; set; }

@@ -29,7 +29,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
         public IEnumerable<User> GetUsers()
         {
-            List<UserSQLDTO> usersSQLDTO = _dbContext.Users.ToList();
+            List<UserSQLServer> usersSQLDTO = _dbContext.Users.ToList();
 
             return usersSQLDTO.Select(u => u.ToEntity()).ToList();
         }
@@ -41,7 +41,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
                 throw new ArgumentNullException("email");
             }
 
-            UserSQLDTO userSQLDTO = _dbContext.Users.Where(u => u.Email == email).FirstOrDefault();
+            UserSQLServer userSQLDTO = _dbContext.Users.Where(u => u.Email == email).FirstOrDefault();
 
 
             return userSQLDTO?.ToEntity();
@@ -54,7 +54,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
                 throw new ArgumentNullException(nameof(user));
             }
 
-            UserSQLDTO userSQLDTO = new UserSQLDTO(user);
+            UserSQLServer userSQLDTO = new UserSQLServer(user);
             _dbContext.Users.Add(userSQLDTO);
             _dbContext.SaveChanges();
 
@@ -68,14 +68,14 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
                 throw new ArgumentNullException("userUpdate");
             }
 
-            UserSQLDTO existingUser = _dbContext.Users.Find(userUpdate.Id);  
+            UserSQLServer existingUser = _dbContext.Users.Find(userUpdate.Id);  
 
             if(existingUser == null)
             {
                 throw new ArgumentException("User Not Found");
             }
 
-            _dbContext.Users.Update(new UserSQLDTO(userUpdate));
+            _dbContext.Users.Update(new UserSQLServer(userUpdate));
             _dbContext.SaveChanges();
 
             return userUpdate;

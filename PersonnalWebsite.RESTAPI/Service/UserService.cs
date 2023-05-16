@@ -9,10 +9,41 @@ namespace PersonnalWebsite.RESTAPI.Service
     public class UserService : IUserService
     {
         private IUserRepo _userRepo;
+        private IAuthService _authService;
 
-        public UserService(IUserRepo userRepo)
+        public UserService(IUserRepo userRepo, IAuthService authService)
         {
             _userRepo = userRepo;
+            _authService = authService;
+        }
+
+        public UserModel RegisterUser(UserRegistrationModel model)
+        {
+            _authService.CreatePasswordHash(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            User user = new User()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Username = model.Username,
+                Email = model.Email,
+                Age = model.Age,
+                CreatedAt = DateTime.UtcNow,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+            };
+
+            _userRepo.CreateUser(user);
+
+            return user.ToModel();
+        }
+
+        public UserModel CreateUser(UserModel user)
+        {
+            User createdUser = _userRepo.CreateUser(user.ToEntity());
+
+            return createdUser.ToModel();
         }
 
         public UserModel GetUserByID(Guid p_userGuid)
@@ -34,13 +65,6 @@ namespace PersonnalWebsite.RESTAPI.Service
             IEnumerable<UserModel> users = _userRepo.GetUsers().Select(u => u.ToModel());
 
             return users;
-        }
-
-        public UserModel CreateUser(UserModel user)
-        {
-            User createdUser = _userRepo.CreateUser(user.ToEntity());
-
-            return createdUser.ToModel();
         }
 
         public UserModel UpdateUser(UserModel user)

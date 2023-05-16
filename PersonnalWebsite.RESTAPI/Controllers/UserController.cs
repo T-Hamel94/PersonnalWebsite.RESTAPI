@@ -7,11 +7,11 @@ namespace PersonnalWebsite.RESTAPI.Controllers
     // Received User from the Service class and returns UserModel
     [Route("api/Users")]
     [ApiController]
-    public class UserContoller : ControllerBase
+    public class UserController : ControllerBase
     {
         private IUserService _userService;
 
-        public UserContoller(IUserService userService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
@@ -105,6 +105,30 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while creating the user");
+            }
+        }
+
+        // POST api/users/register
+        [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [Route("register")]
+        public ActionResult<UserModel> RegisterUser(UserRegistrationModel user)
+        {
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                UserModel createdUser = _userService.RegisterUser(user);
+
+                return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while registering the user");
             }
         }
 

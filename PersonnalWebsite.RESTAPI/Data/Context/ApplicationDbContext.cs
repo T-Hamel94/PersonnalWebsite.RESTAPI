@@ -8,6 +8,6 @@ namespace PersonnalWebsite.RESTAPI.Data.Context
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<UserSQLDTO> Users { get; set; }
+        public DbSet<UserSQLServer> Users { get; set; }
     }
 }

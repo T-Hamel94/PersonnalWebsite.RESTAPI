@@ -19,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 //Dependency Injections
 builder.Services.AddScoped<IUserRepo, UserSqlRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 WebApplication webApp = builder.Build();
 

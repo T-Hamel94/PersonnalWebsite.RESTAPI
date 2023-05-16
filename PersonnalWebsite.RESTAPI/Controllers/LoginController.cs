@@ -1,6 +1,10 @@
-﻿namespace PersonnalWebsite.RESTAPI.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace PersonnalWebsite.RESTAPI.Controllers
 {
-    public class LoginController
+    [Route("api/login")]
+    [ApiController]
+    public class LoginController : ControllerBase
     {
 
     }
