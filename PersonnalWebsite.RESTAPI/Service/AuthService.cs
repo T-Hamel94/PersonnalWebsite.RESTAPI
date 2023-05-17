@@ -12,29 +12,13 @@ namespace PersonnalWebsite.RESTAPI.Service
     {
         private IUserRepo _userRepo;
         private readonly IConfiguration _configuration;
+        private readonly IPasswordService _passwordService;
 
-        public AuthService(IUserRepo userRepo, IConfiguration configuration)
+        public AuthService(IUserRepo userRepo, IConfiguration configuration, IPasswordService passwordService)
         {
             _userRepo = userRepo;
             _configuration = configuration;
-        }
-
-        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt) 
-        { 
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                byte[] computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
+            _passwordService = passwordService; 
         }
 
         public string Login(string email, string password)
@@ -46,7 +30,7 @@ namespace PersonnalWebsite.RESTAPI.Service
                 return null; // The controller should return bad request "User not found"
             }
 
-            if (!VerifyPasswordHash(password, userLoginIn.PasswordHash, userLoginIn.PasswordSalt))
+            if (!_passwordService.VerifyPasswordHash(password, userLoginIn.PasswordHash, userLoginIn.PasswordSalt))
             {
                 return null; // The controller should return bad request "Wrong password"
             }
@@ -64,7 +48,7 @@ namespace PersonnalWebsite.RESTAPI.Service
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value));
+                _configuration.GetSection("AppSettings:TokenKey").Value));
 
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

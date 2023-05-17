@@ -1,5 +1,4 @@
-﻿using PersonnalWebsite.RESTAPI.Data.Repo;
-using PersonnalWebsite.RESTAPI.Entities;
+﻿using PersonnalWebsite.RESTAPI.Entities;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Model;
 
@@ -9,17 +8,17 @@ namespace PersonnalWebsite.RESTAPI.Service
     public class UserService : IUserService
     {
         private IUserRepo _userRepo;
-        private IAuthService _authService;
+        private IPasswordService _passwordService;
 
-        public UserService(IUserRepo userRepo, IAuthService authService)
+        public UserService(IUserRepo userRepo, IPasswordService passwordService)
         {
             _userRepo = userRepo;
-            _authService = authService;
+            _passwordService = passwordService;
         }
 
         public UserModel RegisterUser(UserRegistrationModel model)
         {
-            _authService.CreatePasswordHash(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            _passwordService.CreatePasswordHash(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             User user = new User()
             {
@@ -57,7 +56,7 @@ namespace PersonnalWebsite.RESTAPI.Service
         {
             User user = _userRepo.GetUserByEmail(email);
 
-            return user?.ToModel();
+            return user.ToModel();
         }
 
         public IEnumerable<UserModel> GetUsers()
