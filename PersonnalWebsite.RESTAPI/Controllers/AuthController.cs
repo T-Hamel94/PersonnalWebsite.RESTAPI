@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PersonnalWebsite.RESTAPI.Entities;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Model;
-using PersonnalWebsite.RESTAPI.Service;
 
 namespace PersonnalWebsite.RESTAPI.Controllers
 {
@@ -16,17 +14,17 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             _authService = authService;
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult<string>> Login(UserModel request)
-        //{
-        //    //string JSWToken = _authService.Login(request);
+        [HttpPost]
+        public async Task<ActionResult<string>> Login(UserLoginModel request)
+        {
+            string JSWToken = _authService.Login(request.Email, request.Password);
 
-        //    //if(JSWToken == null)
-        //    //{
-        //    //    return BadRequest("User not found");
-        //    //}
+            if(JSWToken == null)
+            {
+                return BadRequest("User not found");
+            }
 
-        //    //return Ok(JSWToken);
-        //}
+            return Ok(JSWToken);
+        }
     }
 }
