@@ -18,6 +18,8 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
         public string Username { get; set; }
         [Column("Email")]
         public string Email { get; set; }
+        [Column("IsAdmin")]
+        public bool IsAdmin { get; set; }
         [Column("PasswordHash")]
         public byte[] PasswordHash { get; set; }
         [Column("PasswordSalt")]
@@ -38,6 +40,7 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             LastName = user.LastName;
             Username = user.Username;
             Email = user.Email;
+            IsAdmin = user.IsAdmin;
             PasswordHash = user.PasswordHash;
             PasswordSalt = user.PasswordSalt;   
             Age = user.Age;
@@ -45,13 +48,14 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             LastModifiedAt = user.LastModifiedAt;
         }
 
-        public UserSQLServer(Guid id, string lastName, string firstName, string username, string email, byte[] passwordHash, byte[] passwordSalt, int age, DateTime createdAt, DateTime lastModifiedAt)
+        public UserSQLServer(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, byte[] passwordHash, byte[] passwordSalt, int age, DateTime createdAt, DateTime lastModifiedAt)
         {
             UserID = id;
             FirstName = firstName;
             LastName = lastName;
             Username = username;
             Email = email;
+            IsAdmin = isAdmin;
             PasswordHash = passwordHash;
             PasswordSalt = passwordSalt;
             Age = age;
@@ -61,7 +65,7 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
 
         public User ToEntity()
         {
-            return new User(UserID, LastName, FirstName, Username, Email, PasswordHash, PasswordSalt, Age);
+            return new User(UserID, LastName, FirstName, Username, Email, IsAdmin, PasswordHash, PasswordSalt, Age);
         }
     }
 }

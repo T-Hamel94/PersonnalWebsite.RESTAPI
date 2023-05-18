@@ -15,16 +15,17 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Login(UserLoginModel request)
+        public ActionResult<string> Login(UserLoginModel request)
         {
-            string JSWToken = _authService.Login(request.Email, request.Password);
-
-            if(JSWToken == null)
+            try
             {
-                return BadRequest("User not found");
+                string JSWToken = _authService.Login(request.Email, request.Password);
+                return Ok(JSWToken);
             }
-
-            return Ok(JSWToken);
+            catch (Exception e)
+            {
+                return BadRequest("There was an error while logging in");
+            }
         }
     }
 }
