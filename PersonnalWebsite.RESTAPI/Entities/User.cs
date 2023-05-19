@@ -8,17 +8,17 @@ namespace PersonnalWebsite.RESTAPI.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
+        public string Email { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
-        public string Email { get; set; }
         public bool IsAdmin { get; set; }
-        public int Age { get; set; }
+        public DateTime Birthdate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastModifiedAt { get; set; }
 
         public User() { }
 
-        public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, byte[] passwordHash, byte[] passwordSalt, int age)
+        public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, byte[] passwordHash, byte[] passwordSalt, DateTime birthDate)
         {
             Id = id;
             FirstName = firstName;
@@ -28,12 +28,12 @@ namespace PersonnalWebsite.RESTAPI.Entities
             IsAdmin = isAdmin;
             PasswordHash = passwordHash;
             PasswordSalt = passwordSalt;
-            Age = age;
+            Birthdate = birthDate;
             CreatedAt = DateTime.UtcNow;
             LastModifiedAt = DateTime.UtcNow;
         }
 
-        public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, int age)
+        public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, DateTime birthdate)
         {
             Id = id;
             FirstName = firstName;
@@ -41,7 +41,7 @@ namespace PersonnalWebsite.RESTAPI.Entities
             Username = username;
             Email = email;
             IsAdmin = isAdmin;
-            Age = age;
+            Birthdate = birthdate;
             CreatedAt = DateTime.UtcNow;
             LastModifiedAt = DateTime.UtcNow;
 
@@ -52,7 +52,7 @@ namespace PersonnalWebsite.RESTAPI.Entities
 
         public UserModel ToModel()
         {
-            return new UserModel(Id, LastName, FirstName, Username, Email, IsAdmin, Age, CreatedAt, LastModifiedAt);
+            return new UserModel(Id, LastName, FirstName, Username, Email, Birthdate, IsAdmin, CreatedAt, LastModifiedAt);
         }
     }
 }

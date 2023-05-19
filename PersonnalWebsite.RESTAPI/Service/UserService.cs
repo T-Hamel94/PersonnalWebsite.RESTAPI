@@ -27,10 +27,12 @@ namespace PersonnalWebsite.RESTAPI.Service
                 LastName = model.LastName,
                 Username = model.Username,
                 Email = model.Email,
-                Age = model.Age,
-                CreatedAt = DateTime.UtcNow,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
+                Birthdate = model.Birthdate,
+                IsAdmin = false,
+                CreatedAt = DateTime.UtcNow,
+                LastModifiedAt = DateTime.UtcNow
             };
 
             _userRepo.CreateUser(user);

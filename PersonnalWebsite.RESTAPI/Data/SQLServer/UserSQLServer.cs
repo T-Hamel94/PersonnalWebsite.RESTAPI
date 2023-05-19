@@ -18,14 +18,14 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
         public string Username { get; set; }
         [Column("Email")]
         public string Email { get; set; }
-        [Column("IsAdmin")]
-        public bool IsAdmin { get; set; }
         [Column("PasswordHash")]
         public byte[] PasswordHash { get; set; }
         [Column("PasswordSalt")]
         public byte[] PasswordSalt { get; set; }
-        [Column("Age")]
-        public int Age { get; set; }
+        [Column("IsAdmin")]
+        public bool IsAdmin { get; set; }
+        [Column("Birthdate")]
+        public DateTime Birthdate { get; set; }
         [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; }
         [Column("LastModifiedAt")]
@@ -43,12 +43,12 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             IsAdmin = user.IsAdmin;
             PasswordHash = user.PasswordHash;
             PasswordSalt = user.PasswordSalt;   
-            Age = user.Age;
+            Birthdate = user.Birthdate;
             CreatedAt = user.CreatedAt;
             LastModifiedAt = user.LastModifiedAt;
         }
 
-        public UserSQLServer(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, byte[] passwordHash, byte[] passwordSalt, int age, DateTime createdAt, DateTime lastModifiedAt)
+        public UserSQLServer(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, byte[] passwordHash, byte[] passwordSalt, DateTime birthdate, DateTime createdAt, DateTime lastModifiedAt)
         {
             UserID = id;
             FirstName = firstName;
@@ -58,14 +58,14 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             IsAdmin = isAdmin;
             PasswordHash = passwordHash;
             PasswordSalt = passwordSalt;
-            Age = age;
+            Birthdate = birthdate;
             CreatedAt = createdAt;
             LastModifiedAt = lastModifiedAt;
         }
 
         public User ToEntity()
         {
-            return new User(UserID, LastName, FirstName, Username, Email, IsAdmin, PasswordHash, PasswordSalt, Age);
+            return new User(UserID, LastName, FirstName, Username, Email, IsAdmin, PasswordHash, PasswordSalt, Birthdate);
         }
     }
 }

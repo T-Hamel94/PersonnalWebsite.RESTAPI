@@ -22,7 +22,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
                 string JSWToken = _authService.Login(request.Email, request.Password);
                 return Ok(JSWToken);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 return BadRequest("There was an error while logging in");
             }
