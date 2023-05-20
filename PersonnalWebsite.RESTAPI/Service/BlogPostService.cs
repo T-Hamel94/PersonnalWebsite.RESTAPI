@@ -1,4 +1,5 @@
-﻿using PersonnalWebsite.RESTAPI.Interfaces;
+﻿using PersonnalWebsite.RESTAPI.Entities;
+using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Model;
 
 namespace PersonnalWebsite.RESTAPI.Service
@@ -11,20 +12,6 @@ namespace PersonnalWebsite.RESTAPI.Service
         {
             _blogPostRepo = blogPostRepo;
         }
-        public BlogPostModel CreateBlogPost(BlogPostModel blogPost)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteBlogPost(Guid blogPostID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public BlogPostModel GetBlogPostByID(Guid blogPostID)
-        {
-            throw new NotImplementedException();
-        }
 
         public IEnumerable<BlogPostModel> GetBlogPosts()
         {
@@ -32,14 +19,72 @@ namespace PersonnalWebsite.RESTAPI.Service
             return blogPostsModel;
         }
 
-        public BlogPostModel GetBlogPostsByUsername(string username)
+        public BlogPostModel GetBlogPostByID(Guid blogPostID)
         {
-            throw new NotImplementedException();
+            BlogPost blogPostFound = _blogPostRepo.GetBlogPostByID(blogPostID);
+            
+            if (blogPostFound == null)
+            {
+                throw new Exception("Could not find the blogpost");
+            }
+
+            return blogPostFound.ToModel();
+        }
+
+        public IEnumerable<BlogPostModel> GetBlogPostsByUsername(string username)
+        {
+            if (String.IsNullOrEmpty(username))
+            {
+                throw new ArgumentNullException(nameof(username));
+            }
+
+            IEnumerable<BlogPost> blogPostFound = _blogPostRepo.GetBlogPostsByUsername(username);
+
+            return blogPostFound.Select(bp => bp.ToModel());
+        }
+
+        public BlogPostModel CreateBlogPost(BlogPostModel blogPost)
+        {
+            if (blogPost == null)
+            {
+                throw new ArgumentNullException(nameof(blogPost));
+            }
+
+            BlogPost blogPostToCreate = new BlogPost()
+            {
+                BlogPostLanguageID = blogPost.BlogPostLanguageID,
+                Title = blogPost.Title,
+                Author = blogPost.Author,
+                Content = blogPost.Content,
+                CreatedDate = DateTime.Now,
+                UpdatedDate = DateTime.Now
+            };
+
+            BlogPost createdBlogPost = _blogPostRepo.CreateBlogPost(blogPostToCreate);
+
+            if (createdBlogPost == null)
+            {
+                throw new Exception("Blog post was not created");
+            }
+
+            return createdBlogPost.ToModel();
         }
 
         public BlogPostModel UpdateBlogPost(BlogPostModel blogPost)
         {
-            throw new NotImplementedException();
+            if (blogPost == null)
+            {
+                throw new ArgumentNullException(nameof(blogPost));
+            }
+
+            BlogPost blogPostUpdated = _blogPostRepo.UpdateBlogPost(blogPost.ToEntity());
+
+            return blogPostUpdated.ToModel();
+        }
+
+        public void DeleteBlogPost(Guid blogPostID)
+        {
+            _blogPostRepo.DeleteBlogPost(blogPostID);
         }
     }
 }

@@ -35,6 +35,17 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             UpdatedDate = updatedDate;
         }
 
+        public BlogPostSQLServer(BlogPost blogpost)
+        {
+            this.BlogPostID = blogpost.BlogPostID;
+            this.BlogPostLanguageID = blogpost.BlogPostLanguageID;
+            this.Title = blogpost.Title;    
+            this.Author = blogpost.Author;
+            this.Content = blogpost.Content;
+            this.CreatedDate = blogpost.CreatedDate;
+            this.UpdatedDate = blogpost.UpdatedDate;
+        }
+
         public BlogPost ToEntity()
         {
             return new BlogPost(this);
