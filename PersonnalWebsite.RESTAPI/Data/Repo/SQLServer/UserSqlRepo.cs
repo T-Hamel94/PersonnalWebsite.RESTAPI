@@ -17,14 +17,14 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
         public User GetUserByID(Guid userGuid)
         {
-            User user = new User();
-
-            if (userGuid != Guid.Empty)
+            if (userGuid == Guid.Empty)
             {
-                user = _dbContext.Users.Where(u => u.UserID == userGuid).SingleOrDefault()?.ToEntity();
+                throw new ArgumentNullException(nameof(userGuid));
             }
 
-            return user;
+            UserSQLServer user = _dbContext.Users.Where(u => u.UserID == userGuid).SingleOrDefault();
+
+            return user?.ToEntity();
         }
 
         public IEnumerable<User> GetUsers()
@@ -38,11 +38,10 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
         {
             if (string.IsNullOrEmpty(email))
             {
-                throw new ArgumentNullException("email");
+                throw new ArgumentNullException(nameof(email));
             }
 
             UserSQLServer userSQLDTO = _dbContext.Users.Where(u => u.Email == email).FirstOrDefault();
-
 
             return userSQLDTO?.ToEntity();
         }
@@ -65,7 +64,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
         {
             if(userUpdate == null || userUpdate.Id == Guid.Empty)
             {
-                throw new ArgumentNullException("userUpdate");
+                throw new ArgumentNullException(nameof(userUpdate));
             }
 
             UserSQLServer existingUser = _dbContext.Users.Find(userUpdate.Id);  
@@ -79,11 +78,6 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
             _dbContext.SaveChanges();
 
             return userUpdate;
-        }
-
-        public void DeactivateUser(Guid user)
-        {
-            throw new NotImplementedException();
         }
 
         public void DeleteUser(Guid userGuid)

@@ -58,6 +58,11 @@ namespace PersonnalWebsite.RESTAPI.Service
         {
             User user = _userRepo.GetUserByEmail(email);
 
+            if (user == null)
+            {
+                throw new Exception("Could not find User with given email");
+            }
+
             return user.ToModel();
         }
 
