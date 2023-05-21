@@ -14,7 +14,8 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             _authService = authService;
         }
 
-        [HttpPost]
+        [HttpPost()]
+        [Route("login")]
         public ActionResult<string> Login(UserLoginModel request)
         {
             try
