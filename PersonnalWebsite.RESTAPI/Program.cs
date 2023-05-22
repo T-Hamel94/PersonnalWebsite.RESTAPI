@@ -16,6 +16,18 @@ builder.Services.AddSwaggerGen();
 //Db Context
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer());
 
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "MyAllowSpecificOrigins",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+});
+
 //Dependency Injections
 builder.Services.AddScoped<IUserRepo, UserSqlRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -32,6 +44,8 @@ if (webApp.Environment.IsDevelopment())
     webApp.UseSwagger();
     webApp.UseSwaggerUI();
 }
+
+webApp.UseCors("MyAllowSpecificOrigins");
 
 webApp.UseHttpsRedirection();
 
