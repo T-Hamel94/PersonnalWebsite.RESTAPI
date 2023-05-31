@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Model;
 
@@ -133,7 +134,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         }
 
         // PUT api/users
-        [HttpPut]
+        [HttpPut, Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]

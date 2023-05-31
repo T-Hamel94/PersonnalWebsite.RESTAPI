@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PersonnalWebsite.RESTAPI.Data.Context;
 using PersonnalWebsite.RESTAPI.Data.Repo.SQLServer;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Service;
+using System.Text;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,17 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Swagger
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                .GetBytes(builder.Configuration.GetSection("AppSettings:TokenKey").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };      
+    });
 
 // Db Context
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer());
@@ -49,6 +63,7 @@ webApp.UseCors("MyAllowSpecificOrigins");
 
 webApp.UseHttpsRedirection();
 
+webApp.UseAuthentication();
 
 webApp.UseAuthorization();
 
