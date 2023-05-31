@@ -160,5 +160,37 @@ namespace PersonnalWebsite.RESTAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the user");
             }
         }
+
+        // DELETE api/users/{id}
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public ActionResult DeleteUser(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Invalid user Id");
+            }
+
+            try
+            {
+                _userService.DeleteUser(id);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                if (ex.Message == "User not found")
+                {
+                    return NotFound(ex.Message);
+                }
+
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting the user");
+            }
+        }
     }
 }

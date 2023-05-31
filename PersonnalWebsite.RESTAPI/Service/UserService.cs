@@ -80,15 +80,10 @@ namespace PersonnalWebsite.RESTAPI.Service
             return userToUpdate.ToModel();
         }
 
-        public void DeactivateUser(Guid p_user)
-        {
-            throw new NotImplementedException();
-        }
 
-        public void DeleteUser(Guid p_userGuid)
+        public void DeleteUser(Guid userGuid)
         {
-            throw new NotImplementedException();
+            _userRepo.DeleteUser(userGuid);
         }
-
     }
 }

@@ -82,7 +82,20 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
         public void DeleteUser(Guid userGuid)
         {
-            throw new NotImplementedException();
+            if(userGuid == Guid.Empty)
+            {
+                throw new ArgumentNullException();
+            }
+
+            UserSQLServer existingUser = _dbContext.Users.Find(userGuid);
+
+            if(existingUser == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+
+            _dbContext.Users.Remove(existingUser);
+            _dbContext.SaveChanges();
         }
     }
 }

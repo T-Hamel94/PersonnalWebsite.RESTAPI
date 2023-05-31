@@ -52,6 +52,7 @@ namespace PersonnalWebsite.RESTAPI.Service
 
             BlogPost blogPostToCreate = new BlogPost()
             {
+                BlogPostID = Guid.NewGuid(),
                 BlogPostLanguageID = blogPost.BlogPostLanguageID,
                 Title = blogPost.Title,
                 Author = blogPost.Author,
