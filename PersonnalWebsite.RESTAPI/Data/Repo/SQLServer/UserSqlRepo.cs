@@ -1,4 +1,5 @@
-﻿using PersonnalWebsite.RESTAPI.Data.Context;
+﻿using PersonnalWebsite.RESTAPI.CustomExceptions;
+using PersonnalWebsite.RESTAPI.Data.Context;
 using PersonnalWebsite.RESTAPI.Data.SQLServer;
 using PersonnalWebsite.RESTAPI.Entities;
 using PersonnalWebsite.RESTAPI.Interfaces;
@@ -71,7 +72,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
             if(existingUser == null)
             {
-                throw new ArgumentException("User Not Found");
+                throw new UnauthorizedActionException("User logged in ID does not match the User to update");
             }
 
             _dbContext.Users.Update(new UserSQLServer(userUpdate));

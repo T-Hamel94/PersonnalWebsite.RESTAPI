@@ -9,7 +9,7 @@ namespace PersonnalWebsite.RESTAPI.Interfaces
         public UserModel GetUserByEmail(string email);
         public UserModel RegisterUser(UserRegistrationModel model);
         public UserModel CreateUser(UserModel user);
-        public UserModel UpdateUser(UserModel user);
+        public UserModel UpdateUser(Guid loggedInUserId, UserModel user);
         public void DeleteUser(Guid p_userGuid);
     }
 }

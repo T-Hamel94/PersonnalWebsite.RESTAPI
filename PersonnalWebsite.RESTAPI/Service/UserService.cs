@@ -1,4 +1,5 @@
-﻿using PersonnalWebsite.RESTAPI.Entities;
+﻿using PersonnalWebsite.RESTAPI.CustomExceptions;
+using PersonnalWebsite.RESTAPI.Entities;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Model;
 
@@ -73,8 +74,13 @@ namespace PersonnalWebsite.RESTAPI.Service
             return users;
         }
 
-        public UserModel UpdateUser(UserModel user)
+        public UserModel UpdateUser(Guid loggedInUserId, UserModel user)
         {
+            if (user.Id != loggedInUserId)
+            {
+                throw new UnauthorizedActionException("Unauthorized action");
+            }
+
             User userToUpdate = _userRepo.UpdateUser(user.ToEntity());
 
             return userToUpdate.ToModel();

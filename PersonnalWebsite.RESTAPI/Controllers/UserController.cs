@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using log4net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PersonnalWebsite.RESTAPI.CustomExceptions;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Model;
+using System.Security.Claims;
 
 namespace PersonnalWebsite.RESTAPI.Controllers
 {
@@ -10,6 +14,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(UserController));
         private IUserService _userService;
 
         public UserController(IUserService userService)
@@ -29,6 +34,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
 
                 if (userFound == null)
                 {
+                    Log.Warn($"User not found with user id : {userID}");
                     return NotFound();
                 }
 
@@ -44,14 +50,15 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         [HttpGet("email")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<UserModel> GetUserByEmail(string email)
+        public ActionResult<UserModel> GetUserByEmail(string userEmail)
         {
             try
             {
-                UserModel userFound = _userService.GetUserByEmail(email);
+                UserModel userFound = _userService.GetUserByEmail(userEmail);
 
                 if (userFound == null)
                 {
+                    Log.Warn($"User not found with user email: {userEmail}");
                     return NotFound();
                 }
 
@@ -59,7 +66,8 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occured while getting user with email:{email}");
+                Log.Error(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occured while getting user with email:{userEmail}");
             }
         }
 
@@ -82,6 +90,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while getting the users");
             }
         }
@@ -105,6 +114,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while creating the user");
             }
         }
@@ -129,6 +139,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while registering the user");
             }
         }
@@ -142,12 +153,15 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         {
             if (user == null || user.Id == Guid.Empty)
             {
+                Log.Error("Bad Request: Invalid user data with" + user.ToString()); ;
                 return BadRequest("Invalid user data");
             }
 
+            Guid loggedInUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             try
             {
-                UserModel updatedUser = _userService.UpdateUser(user);
+                UserModel updatedUser = _userService.UpdateUser(loggedInUserId, user);
 
                 if (updatedUser == null)
                 {
@@ -156,8 +170,14 @@ namespace PersonnalWebsite.RESTAPI.Controllers
 
                 return Ok(updatedUser);
             }
+            catch (UnauthorizedActionException ex)
+            {
+                Log.Error(ex);
+                return StatusCode(StatusCodes.Status403Forbidden, "Unauthorized action");
+            }
             catch (Exception ex)
             {
+                Log.Error(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the user");
             }
         }
@@ -171,6 +191,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         {
             if (id == Guid.Empty)
             {
+                Log.Error("User ID cannot be null or empty: " + id);
                 return BadRequest("Invalid user Id");
             }
 
@@ -183,6 +204,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             {
                 if (ex.Message == "User not found")
                 {
+                    Log.Error("User not found with ID: " + id);
                     return NotFound(ex.Message);
                 }
 
@@ -190,6 +212,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting the user");
             }
         }
