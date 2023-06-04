@@ -30,9 +30,9 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
         public IEnumerable<User> GetUsers()
         {
-            List<UserSQLServer> usersSQLDTO = _dbContext.Users.ToList();
+            List<UserSQLServer> usersSQLDTO = _dbContext.Users?.ToList();
 
-            return usersSQLDTO.Select(u => u.ToEntity()).ToList();
+            return usersSQLDTO.Select(u => u.ToEntity())?.ToList();
         }
 
         public User GetUserByEmail(string email)
@@ -92,7 +92,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
             if(existingUser == null)
             {
-                throw new ArgumentException("User not found");
+                throw new UserNotFoundException($"User not found with Guid: {userGuid}");
             }
 
             _dbContext.Users.Remove(existingUser);

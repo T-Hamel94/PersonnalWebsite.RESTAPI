@@ -48,9 +48,14 @@ namespace PersonnalWebsite.RESTAPI.Service
             return createdUser.ToModel();
         }
 
-        public UserModel GetUserByID(Guid p_userGuid)
+        public UserModel GetUserByID(Guid userGuid)
         {
-            UserModel user = _userRepo.GetUserByID(p_userGuid).ToModel();
+            UserModel user = _userRepo.GetUserByID(userGuid)?.ToModel();
+
+            if(user == null)
+            {
+                throw new UserNotFoundException($"User could not be found with id: {userGuid}");
+            }
 
             return user;
         }
@@ -61,7 +66,7 @@ namespace PersonnalWebsite.RESTAPI.Service
 
             if (user == null)
             {
-                throw new Exception("Could not find User with given email");
+                throw new UserNotFoundException($"Could not find User with given email {email}");
             }
 
             return user.ToModel();
@@ -69,7 +74,7 @@ namespace PersonnalWebsite.RESTAPI.Service
 
         public IEnumerable<UserModel> GetUsers()
         {
-            IEnumerable<UserModel> users = _userRepo.GetUsers().Select(u => u.ToModel());
+            IEnumerable<UserModel> users = _userRepo.GetUsers()?.Select(u => u?.ToModel());
 
             return users;
         }
@@ -78,7 +83,7 @@ namespace PersonnalWebsite.RESTAPI.Service
         {
             if (user.Id != loggedInUserId)
             {
-                throw new UnauthorizedActionException("Unauthorized action");
+                throw new UnauthorizedActionException("Logged in user and user to update ID's do not match");
             }
 
             User userToUpdate = _userRepo.UpdateUser(user.ToEntity());
