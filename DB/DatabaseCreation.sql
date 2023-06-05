@@ -35,6 +35,7 @@ BEGIN
 		BlogPostLanguageID INT NOT NULL,
 		Title NVARCHAR(255) NOT NULL,
 		Author NVARCHAR(255) NOT NULL,
+		AuthorID UNIQUEIDENTIFIER,
 		Content NVARCHAR(MAX) NOT NULL,
 		CreatedAt DATETIME2 NOT NULL,
 		LastModifiedAt DATETIME2 NOT NULL
@@ -57,11 +58,11 @@ END
 IF NOT EXISTS (SELECT 1 FROM BlogPosts)
 BEGIN
 	-- Insert 5 articles
-INSERT INTO BlogPosts (BlogPostID, BlogPostLanguageID, Title, Author, Content, CreatedAt, LastModifiedAt) 
+INSERT INTO BlogPosts (BlogPostID, BlogPostLanguageID, Title, Author, AuthorID, Content, CreatedAt, LastModifiedAt) 
 VALUES 
-	(NEWID(), 1, 'The future of AI', 'John Doe', 'The future of AI is bright. This article explores...', GETDATE(), GETDATE()),
-	(NEWID(), 1, 'Quantum Computing', 'Jane Smith', 'Quantum computing is the next frontier...', GETDATE(), GETDATE()),
-	(NEWID(), 1, 'The Rise of Blockchain', 'Alice Johnson', 'Blockchain technology is reshaping the world...', GETDATE(), GETDATE()),
-	(NEWID(), 1, 'Big Data Analysis', 'Bob Brown', 'Big data is becoming increasingly important...', GETDATE(), GETDATE()),
-	(NEWID(), 1, 'Cybersecurity in 2023', 'Charlie Davis', 'In the age of digital information, cybersecurity is crucial...', GETDATE(), GETDATE());
+	(NEWID(), 1, 'The future of AI', 'John Doe','F040929F-7A59-4E88-92CC-D6800B365F6B', 'The future of AI is bright. This article explores...', GETDATE(), GETDATE()),
+	(NEWID(), 1, 'Quantum Computing', 'Jane Smith','F040929F-7A59-4E88-92CC-D6800B365F6B', 'Quantum computing is the next frontier...', GETDATE(), GETDATE()),
+	(NEWID(), 1, 'The Rise of Blockchain', 'Alice Johnson','F040929F-7A59-4E88-92CC-D6800B365F6B', 'Blockchain technology is reshaping the world...', GETDATE(), GETDATE()),
+	(NEWID(), 1, 'Big Data Analysis', 'Bob Brown','F040929F-7A59-4E88-92CC-D6800B365F6B', 'Big data is becoming increasingly important...', GETDATE(), GETDATE()),
+	(NEWID(), 1, 'Cybersecurity in 2023', 'Charlie Davis','F040929F-7A59-4E88-92CC-D6800B365F6B', 'In the age of digital information, cybersecurity is crucial...', GETDATE(), GETDATE());
 END

@@ -1,4 +1,5 @@
-﻿using PersonnalWebsite.RESTAPI.Entities;
+﻿using PersonnalWebsite.RESTAPI.CustomExceptions;
+using PersonnalWebsite.RESTAPI.Entities;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Model;
 
@@ -7,10 +8,12 @@ namespace PersonnalWebsite.RESTAPI.Service
     public class BlogPostService : IBlogPostService
     {
         private IBlogPostRepo _blogPostRepo;
+        private IUserRepo _userRepo;
 
-        public BlogPostService(IBlogPostRepo blogPostRepo)
+        public BlogPostService(IBlogPostRepo blogPostRepo, IUserRepo userRepo)
         {
             _blogPostRepo = blogPostRepo;
+            _userRepo = userRepo;
         }
 
         public IEnumerable<BlogPostModel> GetBlogPosts()
@@ -43,11 +46,16 @@ namespace PersonnalWebsite.RESTAPI.Service
             return blogPostFound.Select(bp => bp.ToModel());
         }
 
-        public BlogPostModel CreateBlogPost(BlogPostModel blogPost)
+        public BlogPostModel CreateBlogPost(Guid loggedInUserId, BlogPostModel blogPost)
         {
             if (blogPost == null)
             {
                 throw new ArgumentNullException(nameof(blogPost));
+            }
+
+            if(blogPost.AuthorID != loggedInUserId)
+            {
+                throw new UnauthorizedActionException("The current logged in user cannot post an article under another user");
             }
 
             BlogPost blogPostToCreate = new BlogPost()
@@ -56,6 +64,7 @@ namespace PersonnalWebsite.RESTAPI.Service
                 BlogPostLanguageID = blogPost.BlogPostLanguageID,
                 Title = blogPost.Title,
                 Author = blogPost.Author,
+                AuthorID = blogPost.AuthorID,
                 Content = blogPost.Content,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now
@@ -71,11 +80,17 @@ namespace PersonnalWebsite.RESTAPI.Service
             return createdBlogPost.ToModel();
         }
 
-        public BlogPostModel UpdateBlogPost(BlogPostModel blogPost)
+        public BlogPostModel UpdateBlogPost(Guid loggedInUserId, BlogPostModel blogPost)
         {
             if (blogPost == null)
             {
                 throw new ArgumentNullException(nameof(blogPost));
+            }
+
+            Guid authorId = _userRepo.GetUserByUsername(blogPost.Author).Id;
+            if (authorId != loggedInUserId)
+            {
+                throw new UnauthorizedActionException($"User trying to updated blogpost {blogPost.BlogPostID} is not authorized");
             }
 
             BlogPost blogPostUpdated = _blogPostRepo.UpdateBlogPost(blogPost.ToEntity());
@@ -83,8 +98,15 @@ namespace PersonnalWebsite.RESTAPI.Service
             return blogPostUpdated.ToModel();
         }
 
-        public void DeleteBlogPost(Guid blogPostID)
+        public void DeleteBlogPost(Guid loggedInUserId, Guid blogPostID)
         {
+            Guid originalAuthorID = _blogPostRepo.GetBlogPostByID(blogPostID).AuthorID;
+            
+            if (originalAuthorID != loggedInUserId)
+            {
+                throw new UnauthorizedActionException($"User trying to delete {blogPostID} is not authorized");
+            }
+
             _blogPostRepo.DeleteBlogPost(blogPostID);
         }
     }

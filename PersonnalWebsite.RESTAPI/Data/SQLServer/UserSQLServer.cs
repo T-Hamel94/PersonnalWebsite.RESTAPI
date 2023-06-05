@@ -65,7 +65,7 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
 
         public User ToEntity()
         {
-            return new User(UserID, LastName, FirstName, Username, Email, IsAdmin, PasswordHash, PasswordSalt, Birthdate);
+            return new User(UserID, LastName, FirstName, Username, Email, IsAdmin, PasswordHash, PasswordSalt, Birthdate, CreatedAt, LastModifiedAt);
         }
     }
 }

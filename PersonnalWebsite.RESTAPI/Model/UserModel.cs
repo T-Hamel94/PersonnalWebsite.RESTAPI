@@ -26,7 +26,6 @@ namespace PersonnalWebsite.RESTAPI.Model
             Birthdate = birthdate;
             IsAdmin = isAdmin;
             CreatedAt = createdAt;
-            LastModifiedAt = lastModifiedAt;
         }
 
         public User ToEntity()

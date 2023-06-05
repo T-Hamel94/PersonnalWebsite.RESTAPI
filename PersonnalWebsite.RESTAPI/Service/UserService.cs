@@ -17,6 +17,13 @@ namespace PersonnalWebsite.RESTAPI.Service
             _passwordService = passwordService;
         }
 
+        public IEnumerable<UserPublicModel> GetUsers()
+        {
+            IEnumerable<UserPublicModel> users = _userRepo.GetUsers()?.Select(u => u?.ToPublicModel());
+
+            return users;
+        }
+
         public UserModel RegisterUser(UserRegistrationModel model)
         {
             _passwordService.CreatePasswordHash(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -41,8 +48,14 @@ namespace PersonnalWebsite.RESTAPI.Service
             return user.ToModel();
         }
 
-        public UserModel CreateUser(UserModel user)
+        public UserModel CreateUser(Guid loggedInUserId, UserModel user)
         {
+            User loggedInUser = GetUserByID(loggedInUserId)?.ToEntity();
+            if (!loggedInUser.IsAdmin)
+            {
+                throw new UnauthorizedActionException("Only an admin user can create a user without using registration");
+            }
+
             User createdUser = _userRepo.CreateUser(user.ToEntity());
 
             return createdUser.ToModel();
@@ -72,13 +85,6 @@ namespace PersonnalWebsite.RESTAPI.Service
             return user.ToModel();
         }
 
-        public IEnumerable<UserModel> GetUsers()
-        {
-            IEnumerable<UserModel> users = _userRepo.GetUsers()?.Select(u => u?.ToModel());
-
-            return users;
-        }
-
         public UserModel UpdateUser(Guid loggedInUserId, UserModel user)
         {
             if (user.Id != loggedInUserId)
@@ -92,8 +98,13 @@ namespace PersonnalWebsite.RESTAPI.Service
         }
 
 
-        public void DeleteUser(Guid userGuid)
+        public void DeleteUser(Guid loggedInUserId, Guid userGuid)
         {
+            if (userGuid != loggedInUserId)
+            {
+                throw new UnauthorizedActionException("Logged in user and user to update ID's do not match");
+            }
+
             _userRepo.DeleteUser(userGuid);
         }
     }

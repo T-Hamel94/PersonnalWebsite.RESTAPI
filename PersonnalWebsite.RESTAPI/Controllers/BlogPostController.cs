@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using log4net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PersonnalWebsite.RESTAPI.CustomExceptions;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Model;
+using System.Security.Claims;
 
 namespace PersonnalWebsite.RESTAPI.Controllers
 {
@@ -8,6 +12,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
     [ApiController]
     public class BlogPostController : ControllerBase
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(UserController));
         private IBlogPostService _blogPostService;
 
         public BlogPostController(IBlogPostService blogPostService)
@@ -85,14 +90,16 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         }
 
         // POST api/blogposts
-        [HttpPost]
+        [HttpPost, Authorize]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         public ActionResult<BlogPostModel> CreateBlogPost([FromBody] BlogPostModel blogPost)
         {
+            Guid loggedInUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             try
             {
-                var createdBlogPost = _blogPostService.CreateBlogPost(blogPost);
+                var createdBlogPost = _blogPostService.CreateBlogPost(loggedInUserId, blogPost);
                 return CreatedAtAction(nameof(GetBlogPostById), new { id = createdBlogPost.BlogPostID }, createdBlogPost);
             }
             catch (Exception)
@@ -102,43 +109,60 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         }
 
         // PUT api/blogposts/{id}
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         public ActionResult<BlogPostModel> UpdateBlogPost(Guid id, [FromBody] BlogPostModel blogPost)
         {
+            Guid loggedInUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             try
             {
                 if (id != blogPost.BlogPostID)
                 {
+                    Log.Warn("UpdateBlogPost: The id of the blog post passed as a parameter does not match the id of the blog post to update");
                     return BadRequest("Mismatched blog post ID.");
                 }
 
-                var updatedBlogPost = _blogPostService.UpdateBlogPost(blogPost);
+                BlogPostModel updatedBlogPost = _blogPostService.UpdateBlogPost(loggedInUserId, blogPost);
 
                 if (updatedBlogPost == null)
                 {
+                    Log.Warn("UpdateBlogPost: The blog post to update could not be found");
                     return NotFound();
                 }
 
                 return Ok(updatedBlogPost);
             }
-            catch (Exception)
+            catch (UnauthorizedActionException ex)
             {
+                Log.Error($"UpdateBlogPost: {ex}");
+                return StatusCode(StatusCodes.Status403Forbidden, "Current logged in user does not have the authorization to update this blog post");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"UpdateBlogPost: {ex}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the blog post.");
             }
         }
 
         // DELETE api/blogposts/{id}
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult DeleteBlogPost(Guid id)
         {
+            Guid loggedInUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             try
             {
-                _blogPostService.DeleteBlogPost(id);
+                _blogPostService.DeleteBlogPost(loggedInUserId, id);
                 return NoContent();
+            }
+            catch (UnauthorizedActionException ex)
+            {
+                Log.Error($"DeleteBlogPost: {ex}");
+                return StatusCode(StatusCodes.Status403Forbidden, "Current logged in user does not have the authorization to delete this blog post");
             }
             catch (Exception)
             {

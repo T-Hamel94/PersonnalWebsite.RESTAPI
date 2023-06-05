@@ -22,6 +22,31 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             _userService = userService;
         }
 
+        // GET api/users
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public ActionResult<IEnumerable<UserPublicModel>> GetUsers()
+        {
+            try
+            {
+                IEnumerable<UserPublicModel> users = _userService.GetUsers();
+
+                if (users == null || users.Count() < 1)
+                {
+                    Log.Warn("Could not find any users...");
+                    return NotFound();
+                }
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("GetUsers: " + ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while getting the users");
+            }
+        }
+
         // GET api/users{guid}
         [HttpGet("userID")]
         [ProducesResponseType(200)]
@@ -35,12 +60,12 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (UserNotFoundException ex)
             {
-                Log.Error("User/GetUserByEmail: " + ex);
+                Log.Error("GetUserByEmail: " + ex);
                 return StatusCode(StatusCodes.Status404NotFound, "User not found");
             }
             catch (Exception ex)
             {
-                Log.Error("User/GetUserByEmail: " + ex);
+                Log.Error("GetUserByEmail: " + ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occured while getting user with ID:{userID}");
             }
         }
@@ -58,43 +83,18 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (UserNotFoundException ex)
             {
-                Log.Error("User/GetUserByEmail: " + ex);
+                Log.Error("GetUserByEmail: " + ex);
                 return StatusCode(StatusCodes.Status404NotFound, "User not found");
             }
             catch (Exception ex)
             {
-                Log.Error("User/GetUserByEmail: " + ex);
+                Log.Error("GetUserByEmail: " + ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occured while getting user with email:{userEmail}");
             }
         }
 
-        // GET api/users
-        [HttpGet]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        public ActionResult<IEnumerable<UserModel>> GetUsers()
-        {
-            try
-            {
-                IEnumerable<UserModel> users = _userService.GetUsers();
-
-                if (users == null || users.Count() < 1)
-                {
-                    Log.Warn("Could not find any users...");
-                    return NotFound();
-                }
-
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("User/GetUsers: " + ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while getting the users");
-            }
-        }
-
         // POST api/users
-        [HttpPost]
+        [HttpPost, Authorize]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         public ActionResult<UserModel> CreateUser(UserModel user)
@@ -105,11 +105,18 @@ namespace PersonnalWebsite.RESTAPI.Controllers
                 return BadRequest();
             }
 
+            Guid loggedInUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             try
             {
-                UserModel createdUser = _userService.CreateUser(user);
+                UserModel createdUser = _userService.CreateUser(loggedInUserId, user);
 
                 return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
+            }
+            catch (UnauthorizedActionException ex)
+            {
+                Log.Error($"CreateUser: {ex}");
+                return StatusCode(StatusCodes.Status403Forbidden, "Logged in user is not authorized to create another user");
             }
             catch (Exception ex)
             {
@@ -139,7 +146,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error("User/Register: " + ex);
+                Log.Error("Register: " + ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while registering the user");
             }
         }
@@ -171,20 +178,25 @@ namespace PersonnalWebsite.RESTAPI.Controllers
 
                 return Ok(updatedUser);
             }
+            catch (UserNotFoundException ex)
+            {
+                Log.Error("UpdateUser: " + ex);
+                return NotFound("User to update could not be found");
+            }
             catch (UnauthorizedActionException ex)
             {
-                Log.Error("User/UpdateUsers: " + ex);
+                Log.Error("UpdateUsers: " + ex);
                 return StatusCode(StatusCodes.Status403Forbidden, "Unauthorized action");
             }
             catch (Exception ex)
             {
-                Log.Error("User/UpdateUsers: " + ex);
+                Log.Error("UpdateUsers: " + ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the user");
             }
         }
 
         // DELETE api/users/{id}
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -196,19 +208,26 @@ namespace PersonnalWebsite.RESTAPI.Controllers
                 return BadRequest("Invalid user Id");
             }
 
+            Guid loggedInUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             try
             {
-                _userService.DeleteUser(id);
+                _userService.DeleteUser(loggedInUserId, id);
                 return NoContent();
             }
             catch (UserNotFoundException ex)
             {
-                Log.Error("User/DeleteUser: " + ex);
+                Log.Error("DeleteUser: " + ex);
                 return NotFound("User to delete could not be found");
+            }
+            catch (UnauthorizedActionException ex)
+            {
+                Log.Error("DeleteUser: " + ex);
+                return StatusCode(StatusCodes.Status403Forbidden, "Unauthorized action");
             }
             catch (Exception ex)
             {
-                Log.Error("User/DeleteUser: " + ex);
+                Log.Error("DeleteUser: " + ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting the user");
             }
         }

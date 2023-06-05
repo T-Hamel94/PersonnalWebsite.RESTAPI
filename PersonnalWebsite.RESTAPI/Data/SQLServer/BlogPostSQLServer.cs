@@ -15,6 +15,9 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
         public string Title { get; set; }
         [Column("Author")]
         public string Author { get; set; }
+        [ForeignKey("User")]
+        [Column("AuthorID")]
+        public Guid AuthorID { get; set; }
         [Column("Content")]
         public string Content { get; set; }
         [Column("CreatedAt")]
@@ -24,12 +27,13 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
 
         public BlogPostSQLServer() { }
 
-        public BlogPostSQLServer(Guid blogPostID, int blogPostLanguageID, string title, string author, string content, DateTime createdDate, DateTime updatedDate)
+        public BlogPostSQLServer(Guid blogPostID, int blogPostLanguageID, string title, string author, Guid authorID, string content, DateTime createdDate, DateTime updatedDate)
         {
             BlogPostID = blogPostID;
             BlogPostLanguageID = blogPostLanguageID;
             Title = title;
             Author = author;
+            AuthorID = authorID;
             Content = content;
             CreatedDate = createdDate;
             UpdatedDate = updatedDate;
@@ -41,6 +45,7 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             this.BlogPostLanguageID = blogpost.BlogPostLanguageID;
             this.Title = blogpost.Title;    
             this.Author = blogpost.Author;
+            this.AuthorID = blogpost.AuthorID;
             this.Content = blogpost.Content;
             this.CreatedDate = blogpost.CreatedDate;
             this.UpdatedDate = blogpost.UpdatedDate;

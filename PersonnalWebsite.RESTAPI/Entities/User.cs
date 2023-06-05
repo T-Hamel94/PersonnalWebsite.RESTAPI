@@ -33,6 +33,21 @@ namespace PersonnalWebsite.RESTAPI.Entities
             LastModifiedAt = DateTime.UtcNow;
         }
 
+        public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, byte[] passwordHash, byte[] passwordSalt, DateTime birthDate, DateTime createdAt, DateTime lastModifiedAt)
+        {
+            Id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            Username = username;
+            Email = email;
+            IsAdmin = isAdmin;
+            PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
+            Birthdate = birthDate;
+            CreatedAt = createdAt;
+            LastModifiedAt = lastModifiedAt;
+        }
+
         public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, DateTime birthdate)
         {
             Id = id;
@@ -49,10 +64,14 @@ namespace PersonnalWebsite.RESTAPI.Entities
             PasswordHash = new byte[0];
         }
 
-
         public UserModel ToModel()
         {
             return new UserModel(Id, LastName, FirstName, Username, Email, Birthdate, IsAdmin, CreatedAt, LastModifiedAt);
+        }
+
+        public UserPublicModel ToPublicModel()
+        {
+            return new UserPublicModel(Id, LastName, FirstName, Username, CreatedAt);
         }
     }
 }

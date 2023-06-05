@@ -9,18 +9,20 @@ namespace PersonnalWebsite.RESTAPI.Entities
         public int BlogPostLanguageID { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
+        public Guid AuthorID { get; set; }
         public string Content { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
 
         public BlogPost() { }
 
-        public BlogPost(Guid blogPostID, int blogPostLanguageID, string title, string author, string content, DateTime createdDate, DateTime updatedDate)
+        public BlogPost(Guid blogPostID, int blogPostLanguageID, string title, string author, Guid authorID, string content, DateTime createdDate, DateTime updatedDate)
         {
             BlogPostID = blogPostID;
             BlogPostLanguageID = blogPostLanguageID;
             Title = title;
             Author = author;
+            AuthorID = authorID;
             Content = content;
             CreatedDate = createdDate;
             UpdatedDate = updatedDate;
@@ -32,6 +34,7 @@ namespace PersonnalWebsite.RESTAPI.Entities
             BlogPostLanguageID = blogPostSqlServer.BlogPostLanguageID;
             Title = blogPostSqlServer.Title;
             Author = blogPostSqlServer.Author;
+            AuthorID = blogPostSqlServer.AuthorID;
             Content = blogPostSqlServer.Content;
             CreatedDate = blogPostSqlServer.CreatedDate;
             UpdatedDate = blogPostSqlServer.UpdatedDate;
@@ -45,6 +48,7 @@ namespace PersonnalWebsite.RESTAPI.Entities
                 BlogPostLanguageID = this.BlogPostLanguageID,
                 Title = this.Title,
                 Author = this.Author,
+                AuthorID = this.AuthorID,
                 Content = this.Content,
                 CreatedDate = this.CreatedDate,
                 UpdatedDate = this.UpdatedDate,

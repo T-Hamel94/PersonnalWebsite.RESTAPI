@@ -15,6 +15,12 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
         {
             _dbContext = DbContextGeneration.GetApplicationDBContext();
         }
+        public IEnumerable<User> GetUsers()
+        {
+            List<UserSQLServer> usersSQLDTO = _dbContext.Users?.ToList();
+
+            return usersSQLDTO.Select(u => u.ToEntity())?.ToList();
+        }
 
         public User GetUserByID(Guid userGuid)
         {
@@ -28,13 +34,6 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
             return user?.ToEntity();
         }
 
-        public IEnumerable<User> GetUsers()
-        {
-            List<UserSQLServer> usersSQLDTO = _dbContext.Users?.ToList();
-
-            return usersSQLDTO.Select(u => u.ToEntity())?.ToList();
-        }
-
         public User GetUserByEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -43,6 +42,18 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
             }
 
             UserSQLServer userSQLDTO = _dbContext.Users.Where(u => u.Email == email).FirstOrDefault();
+
+            return userSQLDTO?.ToEntity();
+        }
+
+        public User GetUserByUsername(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentNullException(nameof(username));
+            }
+
+            UserSQLServer userSQLDTO = _dbContext.Users.Where(u => u.Username == username).FirstOrDefault();
 
             return userSQLDTO?.ToEntity();
         }
@@ -72,7 +83,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
             if(existingUser == null)
             {
-                throw new UnauthorizedActionException("User logged in ID does not match the User to update");
+                throw new UserNotFoundException($"Could not find user with id: {userUpdate.Id}");
             }
 
             _dbContext.Users.Update(new UserSQLServer(userUpdate));
