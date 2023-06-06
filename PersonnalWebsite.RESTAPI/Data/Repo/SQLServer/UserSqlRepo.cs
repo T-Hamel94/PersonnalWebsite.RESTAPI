@@ -55,7 +55,12 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
             UserSQLServer userSQLDTO = _dbContext.Users.Where(u => u.Username == username).FirstOrDefault();
 
-            return userSQLDTO?.ToEntity();
+            if (userSQLDTO == null)
+            {
+                throw new UserNotFoundException($"Could not find user with username: {username}");
+            }
+
+            return userSQLDTO.ToEntity();
         }
 
         public User CreateUser(User user)

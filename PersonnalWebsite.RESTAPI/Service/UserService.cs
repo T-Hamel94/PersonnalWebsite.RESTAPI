@@ -21,7 +21,12 @@ namespace PersonnalWebsite.RESTAPI.Service
         {
             IEnumerable<UserPublicModel> users = _userRepo.GetUsers()?.Select(u => u?.ToPublicModel());
 
-            return users;
+            if (users == null)
+            {
+                return new List<UserPublicModel>();
+            }
+
+            return users.OrderBy(u => u.Username);
         }
 
         public UserModel RegisterUser(UserRegistrationModel model)

@@ -1,4 +1,5 @@
-﻿using PersonnalWebsite.RESTAPI.Data.Context;
+﻿using PersonnalWebsite.RESTAPI.CustomExceptions;
+using PersonnalWebsite.RESTAPI.Data.Context;
 using PersonnalWebsite.RESTAPI.Data.SQLServer;
 using PersonnalWebsite.RESTAPI.Entities;
 using PersonnalWebsite.RESTAPI.Interfaces;
@@ -36,22 +37,24 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
             }
 
             BlogPostSQLServer blogPost = _dbContext.BlogPosts.Find(blogPostID);
+
+            if (blogPost == null)
+            {
+                throw new BlogpostNotFoundException();
+            }
+
             return blogPost.ToEntity();
         }
 
         public IEnumerable<BlogPost> GetBlogPosts()
         {
             IEnumerable<BlogPost> posts = _dbContext.BlogPosts.Select(bp => bp.ToEntity());
+
             return posts;
         }
 
         public IEnumerable<BlogPost> GetBlogPostsByUsername(string username)
         {
-            if (String.IsNullOrEmpty(username))
-            {
-                throw new ArgumentNullException(nameof(username));
-            }
-
             IEnumerable<BlogPostSQLServer> blogPostsSqlServer = _dbContext.BlogPosts.Where(bp => bp.Author == username);
             IEnumerable<BlogPost> blogPosts = blogPostsSqlServer.Select(bp => bp.ToEntity());
 
@@ -69,7 +72,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
             if (existingBlogPost == null)
             {
-                throw new ArgumentException("BlogPost with given id doesn't exist", nameof(blogPost));
+                throw new BlogpostNotFoundException($"Could not find blogpost with id {blogPost.BlogPostID}");
             }
 
             existingBlogPost.BlogPostLanguageID = blogPost.BlogPostLanguageID;

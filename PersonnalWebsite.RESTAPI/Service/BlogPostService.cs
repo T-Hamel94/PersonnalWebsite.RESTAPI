@@ -19,17 +19,13 @@ namespace PersonnalWebsite.RESTAPI.Service
         public IEnumerable<BlogPostModel> GetBlogPosts()
         {
             IEnumerable<BlogPostModel> blogPostsModel = _blogPostRepo.GetBlogPosts().Select(bp => bp.ToModel());
+
             return blogPostsModel;
         }
 
         public BlogPostModel GetBlogPostByID(Guid blogPostID)
         {
             BlogPost blogPostFound = _blogPostRepo.GetBlogPostByID(blogPostID);
-            
-            if (blogPostFound == null)
-            {
-                throw new Exception("Could not find the blogpost");
-            }
 
             return blogPostFound.ToModel();
         }
@@ -41,7 +37,9 @@ namespace PersonnalWebsite.RESTAPI.Service
                 throw new ArgumentNullException(nameof(username));
             }
 
-            IEnumerable<BlogPost> blogPostFound = _blogPostRepo.GetBlogPostsByUsername(username);
+            User userFound = _userRepo.GetUserByUsername(username);
+
+            IEnumerable<BlogPost> blogPostFound = _blogPostRepo.GetBlogPostsByUsername(userFound.Username);
 
             return blogPostFound.Select(bp => bp.ToModel());
         }
@@ -53,9 +51,16 @@ namespace PersonnalWebsite.RESTAPI.Service
                 throw new ArgumentNullException(nameof(blogPost));
             }
 
-            if(blogPost.AuthorID != loggedInUserId)
+            if (blogPost.AuthorID != loggedInUserId)
             {
                 throw new UnauthorizedActionException("The current logged in user cannot post an article under another user");
+            }
+
+            User authorFound = _userRepo.GetUserByID(loggedInUserId);
+
+            if (authorFound == null)
+            {
+                throw new UserNotFoundException($"Could not find user with ID {loggedInUserId}");
             }
 
             BlogPost blogPostToCreate = new BlogPost()
@@ -63,8 +68,8 @@ namespace PersonnalWebsite.RESTAPI.Service
                 BlogPostID = Guid.NewGuid(),
                 BlogPostLanguageID = blogPost.BlogPostLanguageID,
                 Title = blogPost.Title,
-                Author = blogPost.Author,
-                AuthorID = blogPost.AuthorID,
+                Author = authorFound.Username,
+                AuthorID = authorFound.Id,
                 Content = blogPost.Content,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now
