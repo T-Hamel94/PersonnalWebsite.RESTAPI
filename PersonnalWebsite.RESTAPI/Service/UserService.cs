@@ -98,14 +98,14 @@ namespace PersonnalWebsite.RESTAPI.Service
         }
 
 
-        public void DeleteUser(Guid loggedInUserId, Guid userGuid)
+        public void DeleteUser(Guid loggedInUserId, Guid userToDeleteID)
         {
-            if (userGuid != loggedInUserId)
+            if (userToDeleteID != loggedInUserId)
             {
-                throw new UnauthorizedActionException("Logged in user and user to update ID's do not match");
+                throw new UnauthorizedActionException("Logged in user and user to delete ID's do not match");
             }
 
-            _userRepo.DeleteUser(userGuid);
+            _userRepo.DeleteUser(userToDeleteID);
         }
     }
 }

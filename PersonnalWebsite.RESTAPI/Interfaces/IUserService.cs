@@ -5,11 +5,11 @@ namespace PersonnalWebsite.RESTAPI.Interfaces
     public interface IUserService
     {
         public IEnumerable<UserPublicModel> GetUsers();
-        public UserModel GetUserByID(Guid p_userGuid);
+        public UserModel GetUserByID(Guid userID);
         public UserModel GetUserByEmail(string email);
-        public UserModel RegisterUser(UserRegistrationModel model);
-        public UserModel CreateUser(Guid loggedInUserId, UserModel user);
-        public UserModel UpdateUser(Guid loggedInUserId, UserModel user);
-        public void DeleteUser(Guid loggedInUserId, Guid p_userGuid);
+        public UserModel RegisterUser(UserRegistrationModel userToRegister);
+        public UserModel CreateUser(Guid loggedInUserId, UserModel userToCreateID);
+        public UserModel UpdateUser(Guid loggedInUserId, UserModel userToUpdateID);
+        public void DeleteUser(Guid loggedInUserId, Guid userToDeleteID);
     }
 }
