@@ -17,21 +17,26 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
         }
         public IEnumerable<User> GetUsers()
         {
-            List<UserSQLServer> usersSQLDTO = _dbContext.Users?.ToList();
+            List<UserSQLServer> usersSQLDTO = _dbContext.Users.ToList();
 
-            return usersSQLDTO.Select(u => u.ToEntity())?.ToList();
+            return usersSQLDTO.Select(u => u.ToEntity()).ToList();
         }
 
-        public User GetUserByID(Guid userGuid)
+        public User GetUserByID(Guid userID)
         {
-            if (userGuid == Guid.Empty)
+            if (userID == Guid.Empty)
             {
-                throw new ArgumentNullException(nameof(userGuid));
+                throw new ArgumentNullException(nameof(userID));
             }
 
-            UserSQLServer user = _dbContext.Users.Where(u => u.UserID == userGuid).SingleOrDefault();
+            UserSQLServer user = _dbContext.Users.Where(u => u.UserID == userID).SingleOrDefault();
 
-            return user?.ToEntity();
+            if (user is null)
+            {
+                throw new UserNotFoundException($"Could not find user with id: {userID}");
+            }
+
+            return user.ToEntity();
         }
 
         public User GetUserByEmail(string email)
@@ -43,7 +48,12 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
             UserSQLServer userSQLDTO = _dbContext.Users.Where(u => u.Email == email).FirstOrDefault();
 
-            return userSQLDTO?.ToEntity();
+            if (userSQLDTO is null)
+            {
+                throw new UserNotFoundException($"Could not find user with email: {email}");
+            }
+
+            return userSQLDTO.ToEntity();
         }
 
         public User GetUserByUsername(string username)
@@ -55,7 +65,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
             UserSQLServer userSQLDTO = _dbContext.Users.Where(u => u.Username == username).FirstOrDefault();
 
-            if (userSQLDTO == null)
+            if (userSQLDTO is null)
             {
                 throw new UserNotFoundException($"Could not find user with username: {username}");
             }
@@ -65,11 +75,6 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
 
         public User CreateUser(User user)
         {
-            if(user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
             UserSQLServer userSQLDTO = new UserSQLServer(user);
             _dbContext.Users.Add(userSQLDTO);
             _dbContext.SaveChanges();
@@ -77,38 +82,28 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
             return userSQLDTO.ToEntity();
         }
 
-        public User UpdateUser(User userUpdate)
+        public User UpdateUser(User userToUpdate)
         {
-            if(userUpdate == null || userUpdate.Id == Guid.Empty)
-            {
-                throw new ArgumentNullException(nameof(userUpdate));
-            }
-
-            UserSQLServer existingUser = _dbContext.Users.Find(userUpdate.Id);  
+            UserSQLServer existingUser = _dbContext.Users.Find(userToUpdate.Id);  
 
             if(existingUser == null)
             {
-                throw new UserNotFoundException($"Could not find user with id: {userUpdate.Id}");
+                throw new UserNotFoundException($"Could not find user with id: {userToUpdate.Id}");
             }
 
-            _dbContext.Users.Update(new UserSQLServer(userUpdate));
+            _dbContext.Users.Update(new UserSQLServer(userToUpdate));
             _dbContext.SaveChanges();
 
-            return userUpdate;
+            return userToUpdate;
         }
 
-        public void DeleteUser(Guid userGuid)
+        public void DeleteUser(Guid userID)
         {
-            if(userGuid == Guid.Empty)
-            {
-                throw new ArgumentNullException();
-            }
-
-            UserSQLServer existingUser = _dbContext.Users.Find(userGuid);
+            UserSQLServer existingUser = _dbContext.Users.Find(userID);
 
             if(existingUser == null)
             {
-                throw new UserNotFoundException($"User not found with Guid: {userGuid}");
+                throw new UserNotFoundException($"User not found with Guid: {userID}");
             }
 
             _dbContext.Users.Remove(existingUser);

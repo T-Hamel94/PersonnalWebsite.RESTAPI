@@ -19,21 +19,30 @@ namespace PersonnalWebsite.RESTAPI.Service
 
         public IEnumerable<UserPublicModel> GetUsers()
         {
-            IEnumerable<UserPublicModel> users = _userRepo.GetUsers()?.Select(u => u?.ToPublicModel());
-
-            if (users == null)
-            {
-                return new List<UserPublicModel>();
-            }
+            IEnumerable<UserPublicModel> users = _userRepo.GetUsers().Select(u => u.ToPublicModel());
 
             return users.OrderBy(u => u.Username);
+        }
+
+        public UserModel GetUserByID(Guid userID)
+        {
+            User user = _userRepo.GetUserByID(userID);
+
+            return user.ToModel();
+        }
+
+        public UserModel GetUserByEmail(string email)
+        {
+            User user = _userRepo.GetUserByEmail(email);
+
+            return user.ToModel();
         }
 
         public UserModel RegisterUser(UserRegistrationModel model)
         {
             _passwordService.CreatePasswordHash(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            User user = new User()
+            User newUser = new User()
             {
                 Id = Guid.NewGuid(),
                 FirstName = model.FirstName,
@@ -48,46 +57,23 @@ namespace PersonnalWebsite.RESTAPI.Service
                 LastModifiedAt = DateTime.UtcNow
             };
 
-            _userRepo.CreateUser(user);
+            _userRepo.CreateUser(newUser);
 
-            return user.ToModel();
+            return newUser.ToModel();
         }
 
-        public UserModel CreateUser(Guid loggedInUserId, UserModel user)
+        public UserModel CreateUser(Guid loggedInUserId, UserModel newUser)
         {
             User loggedInUser = GetUserByID(loggedInUserId)?.ToEntity();
+
             if (!loggedInUser.IsAdmin)
             {
                 throw new UnauthorizedActionException("Only an admin user can create a user without using registration");
             }
 
-            User createdUser = _userRepo.CreateUser(user.ToEntity());
+            User createdUser = _userRepo.CreateUser(newUser.ToEntity());
 
             return createdUser.ToModel();
-        }
-
-        public UserModel GetUserByID(Guid userGuid)
-        {
-            UserModel user = _userRepo.GetUserByID(userGuid)?.ToModel();
-
-            if(user == null)
-            {
-                throw new UserNotFoundException($"User could not be found with id: {userGuid}");
-            }
-
-            return user;
-        }
-
-        public UserModel GetUserByEmail(string email)
-        {
-            User user = _userRepo.GetUserByEmail(email);
-
-            if (user == null)
-            {
-                throw new UserNotFoundException($"Could not find User with given email {email}");
-            }
-
-            return user.ToModel();
         }
 
         public UserModel UpdateUser(Guid loggedInUserId, UserModel user)
@@ -101,7 +87,6 @@ namespace PersonnalWebsite.RESTAPI.Service
 
             return userToUpdate.ToModel();
         }
-
 
         public void DeleteUser(Guid loggedInUserId, Guid userToDeleteID)
         {

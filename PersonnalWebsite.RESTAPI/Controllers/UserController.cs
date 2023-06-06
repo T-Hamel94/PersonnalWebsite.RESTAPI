@@ -30,13 +30,6 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             try
             {
                 IEnumerable<UserPublicModel> users = _userService.GetUsers();
-
-                if (users == null || users.Count() < 1)
-                {
-                    Log.Warn("Could not find any users...");
-                    return NotFound();
-                }
-
                 return Ok(users);
             }
             catch (Exception ex)
@@ -96,11 +89,13 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         [HttpPost, Authorize]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public ActionResult<UserModel> CreateUser(UserModel user)
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        public ActionResult<UserModel> CreateUser(UserModel newUser)
         {
-            if(user == null)
+            if(newUser == null)
             {
-                Log.Warn($"User cannot be null: {user}");
+                Log.Warn($"User cannot be null: {newUser}");
                 return BadRequest();
             }
 
@@ -108,14 +103,13 @@ namespace PersonnalWebsite.RESTAPI.Controllers
 
             try
             {
-                UserModel createdUser = _userService.CreateUser(loggedInUserId, user);
-
+                UserModel createdUser = _userService.CreateUser(loggedInUserId, newUser);
                 return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
             }
             catch (UnauthorizedActionException ex)
             {
                 Log.Error($"CreateUser: {ex}");
-                return StatusCode(StatusCodes.Status403Forbidden, "Logged in user is not authorized to create another user");
+                return Forbid("Logged in user is not authorized to create another user");
             }
             catch (Exception ex)
             {
@@ -129,18 +123,17 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [Route("register")]
-        public ActionResult<UserModel> RegisterUser(UserRegistrationModel user)
+        public ActionResult<UserModel> RegisterUser(UserRegistrationModel newUser)
         {
-            if (user == null)
+            if (newUser == null)
             {
-                Log.Warn($"User cannot be null: {user}");
+                Log.Warn($"User cannot be null: {newUser}");
                 return BadRequest();
             }
 
             try
             {
-                UserModel createdUser = _userService.RegisterUser(user);
-
+                UserModel createdUser = _userService.RegisterUser(newUser);
                 return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
             }
             catch (Exception ex)
@@ -154,12 +147,14 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         [HttpPut, Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        public ActionResult<UserModel> UpdateUser(UserModel user)
+        public ActionResult<UserModel> UpdateUser(UserModel userToUpdate)
         {
-            if (user == null || user.Id == Guid.Empty)
+            if (userToUpdate == null || userToUpdate.Id == Guid.Empty)
             {
-                Log.Warn($"User argument cannot be null and it's ID cannot be empty: {user}");
+                Log.Warn($"User argument cannot be null and it's ID cannot be empty: {userToUpdate}");
                 return BadRequest("Invalid user data");
             }
 
@@ -167,14 +162,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
 
             try
             {
-                UserModel updatedUser = _userService.UpdateUser(loggedInUserId, user);
-
-                if (updatedUser == null)
-                {
-                    Log.Warn($"Could not find the user to update with the object: {user}");
-                    return NotFound("User not found");
-                }
-
+                UserModel updatedUser = _userService.UpdateUser(loggedInUserId, userToUpdate);
                 return Ok(updatedUser);
             }
             catch (UserNotFoundException ex)
@@ -198,12 +186,14 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         [HttpDelete("{id}"), Authorize]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        public ActionResult DeleteUser(Guid id)
+        public ActionResult DeleteUser(Guid userID)
         {
-            if (id == Guid.Empty)
+            if (userID == Guid.Empty)
             {
-                Log.Warn($"User ID cannot be null or empty: {id}");
+                Log.Warn($"User ID cannot be null or empty: {userID}");
                 return BadRequest("Invalid user Id");
             }
 
@@ -211,7 +201,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
 
             try
             {
-                _userService.DeleteUser(loggedInUserId, id);
+                _userService.DeleteUser(loggedInUserId, userID);
                 return NoContent();
             }
             catch (UserNotFoundException ex)
@@ -222,7 +212,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             catch (UnauthorizedActionException ex)
             {
                 Log.Error("DeleteUser: " + ex);
-                return StatusCode(StatusCodes.Status403Forbidden, "Unauthorized action");
+                return Forbid("Unauthorized action");
             }
             catch (Exception ex)
             {
