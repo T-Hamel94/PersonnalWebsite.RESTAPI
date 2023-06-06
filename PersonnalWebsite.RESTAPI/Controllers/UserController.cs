@@ -52,8 +52,8 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (UserNotFoundException ex)
             {
-                Log.Error("GetUserByEmail: " + ex);
-                return StatusCode(StatusCodes.Status404NotFound, "User not found");
+                Log.Warn("GetUserByEmail: " + ex);
+                return NotFound($"Could not find user with ID: {userID}");
             }
             catch (Exception ex)
             {
@@ -75,8 +75,8 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (UserNotFoundException ex)
             {
-                Log.Error("GetUserByEmail: " + ex);
-                return StatusCode(StatusCodes.Status404NotFound, "User not found");
+                Log.Warn("GetUserByEmail: " + ex);
+                return NotFound($"Could not find user with email: {userEmail}");
             }
             catch (Exception ex)
             {
@@ -108,7 +108,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (UnauthorizedActionException ex)
             {
-                Log.Error($"CreateUser: {ex}");
+                Log.Warn($"CreateUser: {ex}");
                 return Forbid("Logged in user is not authorized to create another user");
             }
             catch (Exception ex)
@@ -167,12 +167,12 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (UserNotFoundException ex)
             {
-                Log.Error("UpdateUser: " + ex);
+                Log.Info("UpdateUser: " + ex);
                 return NotFound("User to update could not be found");
             }
             catch (UnauthorizedActionException ex)
             {
-                Log.Error("UpdateUsers: " + ex);
+                Log.Warn("UpdateUsers: " + ex);
                 return StatusCode(StatusCodes.Status403Forbidden, "Unauthorized action");
             }
             catch (Exception ex)
@@ -206,12 +206,12 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
             catch (UserNotFoundException ex)
             {
-                Log.Error("DeleteUser: " + ex);
+                Log.Info("DeleteUser: " + ex);
                 return NotFound("User to delete could not be found");
             }
             catch (UnauthorizedActionException ex)
             {
-                Log.Error("DeleteUser: " + ex);
+                Log.Warn("DeleteUser: " + ex);
                 return Forbid("Unauthorized action");
             }
             catch (Exception ex)
