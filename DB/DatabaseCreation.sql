@@ -27,6 +27,10 @@ BEGIN
 	);
 END
 
+-- Delete all rows from the Users table
+DELETE FROM Users;
+
+
 -- Create BlogPosts
 IF NOT EXISTS(SELECT * FROM sysobjects WHERE name='BlogPosts')
 BEGIN
@@ -41,18 +45,6 @@ BEGIN
 		LastModifiedAt DATETIME2 NOT NULL
 	);
 END
-
----- Insert test users if Users table is empty
---IF NOT EXISTS (SELECT 1 FROM Users)
---BEGIN
---	INSERT INTO Users (UserID, LastName, FirstName, Username, Email,/* PasswordHash, PasswordSalt,*/ Age, CreatedAt, LastModifiedAt)
---	VALUES 
---	(NEWID(), 'Jackson', 'Michael', 'MJ', 'MichaelJackson@hotmail.com', 67, GETDATE(), GETDATE()),
---	(NEWID(), 'Black', 'Jack', 'JB_FromD', 'Jack_Black@gmail.com', 55, GETDATE(), GETDATE()),
---	(NEWID(), 'E', 'Eazy', 'EazyMfinE92', 'EazyE@outlook.com', 56, GETDATE(), GETDATE()),
---	(NEWID(), 'Biden', 'Joe', 'Brandon56', 'Joe.Bidden@gmail.com', 85, GETDATE(), GETDATE()),
---	(NEWID(), 'Brown', 'James', 'Brownie69', 'this_is_a_mans_world@hotmail.com', 90, GETDATE(), GETDATE());
---END
 
 -- Insert test Articles into the DB if BlogPosts table is empty
 IF NOT EXISTS (SELECT 1 FROM BlogPosts)

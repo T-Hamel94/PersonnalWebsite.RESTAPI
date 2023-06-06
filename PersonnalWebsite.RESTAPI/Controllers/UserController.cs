@@ -39,11 +39,11 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
         }
 
-        // GET api/users{guid}
-        [HttpGet("userID")]
+        // GET api/users/{guid}
+        [HttpGet("userID/{userID}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<UserModel> GetUser(Guid userID)
+        public ActionResult<UserModel> GetUserById(Guid userID)
         {
             try
             {
@@ -63,25 +63,25 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         }
 
         // GET api/users{email}
-        [HttpGet("email")]
+        [HttpGet("email/{email}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<UserModel> GetUserByEmail(string userEmail)
+        public ActionResult<UserModel> GetUserByEmail(string email)
         {
             try
             {
-                UserModel userFound = _userService.GetUserByEmail(userEmail);
+                UserModel userFound = _userService.GetUserByEmail(email);
                 return Ok(userFound);
             }
             catch (UserNotFoundException ex)
             {
                 Log.Warn("GetUserByEmail: " + ex);
-                return NotFound($"Could not find user with email: {userEmail}");
+                return NotFound($"Could not find user with email: {email}");
             }
             catch (Exception ex)
             {
                 Log.Error("GetUserByEmail: " + ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occured while getting user with email:{userEmail}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occured while getting user with email:{email}");
             }
         }
 
@@ -104,7 +104,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             try
             {
                 UserModel createdUser = _userService.CreateUser(loggedInUserId, newUser);
-                return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
+                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
             catch (UnauthorizedActionException ex)
             {
@@ -134,7 +134,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             try
             {
                 UserModel createdUser = _userService.RegisterUser(newUser);
-                return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
+                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
             catch (Exception ex)
             {
