@@ -21,7 +21,7 @@ namespace PersonnalWebsite.RESTAPI.Service
         {
             IEnumerable<UserPublicModel> users = _userRepo.GetUsers().Select(u => u.ToPublicModel());
 
-            return users.OrderBy(u => u.Username);
+            return users.OrderBy(u => u.Username.ToLower());
         }
 
         public UserModel GetUserByID(Guid userID)

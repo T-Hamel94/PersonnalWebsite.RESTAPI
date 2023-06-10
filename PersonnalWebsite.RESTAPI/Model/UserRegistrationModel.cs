@@ -16,11 +16,13 @@ namespace PersonnalWebsite.RESTAPI.Model
 
         public UserRegistrationModel() { }
 
-        public UserRegistrationModel(Guid id, string lastName, string firstName, string email, DateTime birthdate, DateTime createdAt, DateTime lastModifiedAt)
+        public UserRegistrationModel(Guid id, string lastName, string firstName, string username, string password, string email, DateTime birthdate, DateTime createdAt, DateTime lastModifiedAt)
         {
             Id = id;
             FirstName = firstName;
             LastName = lastName;
+            Username = username;
+            Password = password;
             Email = email;
             Birthdate = birthdate;
             CreatedAt = createdAt;

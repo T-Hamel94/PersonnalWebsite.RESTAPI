@@ -69,6 +69,11 @@ namespace PersonnalWebsite.RESTAPI.Entities
             return new UserModel(Id, LastName, FirstName, Username, Email, Birthdate, IsAdmin, CreatedAt, LastModifiedAt);
         }
 
+        public UserRegistrationModel ToRegistrationModel()
+        {
+            return new UserRegistrationModel(Id, LastName, FirstName, Username, string.Empty, Email, Birthdate, CreatedAt, LastModifiedAt);
+        }
+
         public UserPublicModel ToPublicModel()
         {
             return new UserPublicModel(Id, LastName, FirstName, Username, CreatedAt);
