@@ -91,6 +91,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
                 throw new UserNotFoundException($"Could not find user with id: {userToUpdate.Id}");
             }
 
+            userToUpdate.LastModifiedAt = DateTime.Now;
             _dbContext.Users.Update(new UserSQLServer(userToUpdate));
             _dbContext.SaveChanges();
 

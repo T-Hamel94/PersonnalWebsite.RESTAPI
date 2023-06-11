@@ -40,15 +40,15 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             LastName = user.LastName;
             Username = user.Username;
             Email = user.Email;
-            IsAdmin = user.IsAdmin;
-            PasswordHash = user.PasswordHash;
-            PasswordSalt = user.PasswordSalt;   
+            IsAdmin = user.IsAdmin; 
             Birthdate = user.Birthdate;
             CreatedAt = user.CreatedAt;
             LastModifiedAt = user.LastModifiedAt;
+            PasswordHash = user.PasswordHash;
+            PasswordSalt = user.PasswordSalt;
         }
 
-        public UserSQLServer(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, byte[] passwordHash, byte[] passwordSalt, DateTime birthdate, DateTime createdAt, DateTime lastModifiedAt)
+        public UserSQLServer(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, DateTime birthdate, DateTime createdAt, DateTime lastModifiedAt, byte[] passwordHash, byte[] passwordSalt)
         {
             UserID = id;
             FirstName = firstName;
@@ -56,16 +56,16 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             Username = username;
             Email = email;
             IsAdmin = isAdmin;
-            PasswordHash = passwordHash;
-            PasswordSalt = passwordSalt;
             Birthdate = birthdate;
             CreatedAt = createdAt;
             LastModifiedAt = lastModifiedAt;
+            PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
         }
 
         public User ToEntity()
         {
-            return new User(UserID, LastName, FirstName, Username, Email, IsAdmin, PasswordHash, PasswordSalt, Birthdate, CreatedAt, LastModifiedAt);
+            return new User(UserID, LastName, FirstName, Username, Email, IsAdmin, Birthdate, CreatedAt, LastModifiedAt, PasswordHash, PasswordSalt);
         }
     }
 }

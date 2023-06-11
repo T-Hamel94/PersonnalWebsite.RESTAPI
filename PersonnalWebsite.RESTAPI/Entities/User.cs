@@ -18,37 +18,8 @@ namespace PersonnalWebsite.RESTAPI.Entities
 
         public User() { }
 
-        public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, byte[] passwordHash, byte[] passwordSalt, DateTime birthDate)
-        {
-            Id = id;
-            FirstName = firstName;
-            LastName = lastName;
-            Username = username;
-            Email = email;
-            IsAdmin = isAdmin;
-            PasswordHash = passwordHash;
-            PasswordSalt = passwordSalt;
-            Birthdate = birthDate;
-            CreatedAt = DateTime.UtcNow;
-            LastModifiedAt = DateTime.UtcNow;
-        }
 
-        public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, byte[] passwordHash, byte[] passwordSalt, DateTime birthDate, DateTime createdAt, DateTime lastModifiedAt)
-        {
-            Id = id;
-            FirstName = firstName;
-            LastName = lastName;
-            Username = username;
-            Email = email;
-            IsAdmin = isAdmin;
-            PasswordHash = passwordHash;
-            PasswordSalt = passwordSalt;
-            Birthdate = birthDate;
-            CreatedAt = createdAt;
-            LastModifiedAt = lastModifiedAt;
-        }
-
-        public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, DateTime birthdate)
+        public User(Guid id, string lastName, string firstName, string username, string email, bool isAdmin, DateTime birthdate, DateTime createdAt, DateTime lastModifiedAt, byte[] passwordHash, byte[] passwordSalt)
         {
             Id = id;
             FirstName = firstName;
@@ -57,11 +28,10 @@ namespace PersonnalWebsite.RESTAPI.Entities
             Email = email;
             IsAdmin = isAdmin;
             Birthdate = birthdate;
-            CreatedAt = DateTime.UtcNow;
-            LastModifiedAt = DateTime.UtcNow;
-
-            PasswordSalt = new byte[0];
-            PasswordHash = new byte[0];
+            CreatedAt = createdAt;
+            LastModifiedAt = lastModifiedAt;
+            PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
         }
 
         public UserModel ToModel()
@@ -69,14 +39,15 @@ namespace PersonnalWebsite.RESTAPI.Entities
             return new UserModel(Id, LastName, FirstName, Username, Email, Birthdate, IsAdmin, CreatedAt, LastModifiedAt);
         }
 
+        public UserPublicModel ToPublicModel()
+        {
+            return new UserPublicModel(Id, LastName, FirstName, Username, CreatedAt);
+        }
+
         public UserRegistrationModel ToRegistrationModel()
         {
             return new UserRegistrationModel(Id, LastName, FirstName, Username, string.Empty, Email, Birthdate, CreatedAt, LastModifiedAt);
         }
 
-        public UserPublicModel ToPublicModel()
-        {
-            return new UserPublicModel(Id, LastName, FirstName, Username, CreatedAt);
-        }
     }
 }

@@ -39,7 +39,7 @@ namespace PersonnalWebsite.RESTAPI.Test.Service
             // Assert
             result.Should().BeAssignableTo<IEnumerable<UserPublicModel>>();
             result.Should().NotBeNull();
-            result.Should().HaveCount(3);
+            result.Should().HaveCount(5);
             result.Select(r => r.Username.ToLower()).Should().BeInAscendingOrder();
         }
 
@@ -59,10 +59,29 @@ namespace PersonnalWebsite.RESTAPI.Test.Service
         }
         #endregion
 
+        #region updateUser
+        [Fact]
+        public void UpdateUsers_ReceivesValidUser_ReturnsUpdatedUser()
+        {
+            // Arrange 
+            UserModel userToUpdate = UserHelper.GenerateUser().ToModel();
+            Guid loggedInUserID = userToUpdate.Id;
+
+            User userModified = userToUpdate.ToEntity();
+            userModified.LastModifiedAt = DateTime.Now.AddMinutes(1);
+            _mockUserRepo.Setup(repo => repo.UpdateUser(It.Is<User>(u => u.Id == userToUpdate.Id))).Returns(userModified);
 
 
+            // Act
+            UserModel userReceived = _userService.UpdateUser(loggedInUserID, userToUpdate);
 
-        #region SetUp
+            // Assert 
+            userReceived.Should().NotBeNull();
+            userReceived.Should().BeOfType<UserModel>();
+            userReceived.LastModifiedAt.Should().NotBeOnOrBefore(userToUpdate.LastModifiedAt);
+            userReceived.Id.Should().Be(loggedInUserID);
+            userReceived.Id.Should().Be(userToUpdate.Id);
+        }
         #endregion
     }
 }
