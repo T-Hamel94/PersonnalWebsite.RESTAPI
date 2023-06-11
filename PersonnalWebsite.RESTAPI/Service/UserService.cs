@@ -53,8 +53,8 @@ namespace PersonnalWebsite.RESTAPI.Service
                 PasswordSalt = passwordSalt,
                 Birthdate = model.Birthdate,
                 IsAdmin = false,
-                CreatedAt = DateTime.UtcNow,
-                LastModifiedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now,
+                LastModifiedAt = DateTime.Now
             };
 
             _userRepo.CreateUser(newUser);

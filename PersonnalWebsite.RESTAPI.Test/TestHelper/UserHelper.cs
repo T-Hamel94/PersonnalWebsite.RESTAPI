@@ -29,6 +29,40 @@ namespace PersonnalWebsite.RESTAPI.Test.TestHelper
             };
         }
 
+        public static User GenerateAdminUser()
+        {
+            return new User()
+            {
+                Id = Guid.NewGuid(),
+                Username = "Marximus",
+                FirstName = "Karl",
+                LastName = "Marx",
+                Email = "KarloMarxo@mail.org",
+                IsAdmin = true,
+                PasswordHash = new byte[10],
+                PasswordSalt = new byte[10],
+                Birthdate = DateTime.Now.AddYears(-120),
+                CreatedAt = DateTime.Now.AddHours(-5),
+                LastModifiedAt = DateTime.Now.AddHours(-5),
+            };
+        }
+
+        public static UserRegistrationModel GenerateUserRegistrationModel()
+        {
+            return new UserRegistrationModel()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "John ",
+                LastName = "F. Kennedy",
+                Username = "JFK",
+                Password = "peaceandlove",
+                Email = "JFK@us.gov",
+                Birthdate = DateTime.Now.AddYears(-90),
+                CreatedAt = DateTime.Now,
+                LastModifiedAt = DateTime.Now,
+            };
+        }
+
         public static List<User> GenerateListOf5Users()
         {
             return new List<User>()
