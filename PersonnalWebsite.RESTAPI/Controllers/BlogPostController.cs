@@ -23,7 +23,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         // GET api/blogposts
         [HttpGet]
         [ProducesResponseType(200)]
-        public ActionResult<BlogPostModel> GetBlogPosts()
+        public ActionResult<List<BlogPostModel>> GetBlogPosts()
         {
             try
             {

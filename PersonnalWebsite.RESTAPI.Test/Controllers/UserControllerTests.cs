@@ -307,12 +307,9 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
             // Act
             ActionResult<UserModel> actionResult = _userController.UpdateUser(userToUpdate);
-            var statusCodeResult = actionResult.Result as ObjectResult;
 
             // Assert
-            statusCodeResult.Should().NotBeNull();
-            statusCodeResult.Value.Should().Be("Unauthorized action");
-            statusCodeResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+            var forbidResult = Assert.IsType<ForbidResult>(actionResult.Result);
         }
 
         [Fact]

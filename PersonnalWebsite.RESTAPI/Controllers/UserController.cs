@@ -173,7 +173,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             catch (UnauthorizedActionException ex)
             {
                 Log.Warn("UpdateUsers: " + ex);
-                return StatusCode(StatusCodes.Status403Forbidden, "Unauthorized action");
+                return Forbid("Unauthorized action");
             }
             catch (Exception ex)
             {
