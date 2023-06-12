@@ -11,7 +11,7 @@ namespace PersonnalWebsite.RESTAPI.Test.TestHelper
             { 
                 BlogPostID = Guid.NewGuid(),
                 BlogPostLanguageID = 1,
-                Author = "JKRowling",
+                Author = "Nietzschy",
                 AuthorID = Guid.NewGuid(),
                 Title = "The rise of the Unit tester",
                 Content = "There once was a crazy dev who was passionate by writting Unit Tests, he would unit test everything he could in his life. One day...", 
