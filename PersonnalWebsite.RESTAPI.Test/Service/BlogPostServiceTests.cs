@@ -144,6 +144,30 @@ namespace PersonnalWebsite.RESTAPI.Test.Service
         }
 
         [Fact]
+        public void CreateBlogPost_ReturnsBlogPostModelAsNotApproved_WhenAuthorIsLoggedIn()
+        {
+            // Arrange
+            User authorFound = UserHelper.GenerateUser();
+            Guid loggedInUserId = authorFound.Id;
+
+            BlogPostModel blogPostToCreate = BlogPostHelper.GenerateBlogPost().ToModel();
+            blogPostToCreate.AuthorID = loggedInUserId;
+            authorFound.Id = loggedInUserId;
+            BlogPost createdBlogPost = blogPostToCreate.ToEntity();
+
+            _mockUserRepo.Setup(repo => repo.GetUserByID(loggedInUserId)).Returns(authorFound);
+            _mockBlogPostRepo.Setup(repo => repo.CreateBlogPost(It.IsAny<BlogPost>())).Returns(createdBlogPost);
+
+            // Act
+            BlogPostModel result = _blogPostService.CreateBlogPost(loggedInUserId, blogPostToCreate);
+
+            // Assert
+            result.Should().BeAssignableTo<BlogPostModel>();
+            result.Should().NotBeNull();
+            result.IsApproved.Should().BeFalse();
+        }
+
+        [Fact]
         public void CreateBlogPost_ThrowsArgumentNullException_WhenBlogPostIsNull()
         {
             // Arrange

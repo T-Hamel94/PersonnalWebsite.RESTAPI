@@ -71,6 +71,7 @@ namespace PersonnalWebsite.RESTAPI.Service
                 Author = authorFound.Username,
                 AuthorID = authorFound.Id,
                 Content = blogPost.Content,
+                IsApproved = false,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now
             };

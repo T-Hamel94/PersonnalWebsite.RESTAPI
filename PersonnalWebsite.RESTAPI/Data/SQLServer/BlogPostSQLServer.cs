@@ -20,6 +20,8 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
         public Guid AuthorID { get; set; }
         [Column("Content")]
         public string Content { get; set; }
+        [Column("IsApproved")]
+        public bool IsApproved { get; set; }
         [Column("CreatedAt")]
         public DateTime CreatedDate { get; set; }
         [Column("LastModifiedAt")]
@@ -27,7 +29,7 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
 
         public BlogPostSQLServer() { }
 
-        public BlogPostSQLServer(Guid blogPostID, int blogPostLanguageID, string title, string author, Guid authorID, string content, DateTime createdDate, DateTime updatedDate)
+        public BlogPostSQLServer(Guid blogPostID, int blogPostLanguageID, string title, string author, Guid authorID, string content, bool isApproved, DateTime createdDate, DateTime updatedDate)
         {
             BlogPostID = blogPostID;
             BlogPostLanguageID = blogPostLanguageID;
@@ -35,6 +37,7 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             Author = author;
             AuthorID = authorID;
             Content = content;
+            IsApproved = isApproved;
             CreatedDate = createdDate;
             UpdatedDate = updatedDate;
         }
@@ -47,6 +50,7 @@ namespace PersonnalWebsite.RESTAPI.Data.SQLServer
             this.Author = blogpost.Author;
             this.AuthorID = blogpost.AuthorID;
             this.Content = blogpost.Content;
+            this.IsApproved = blogpost.IsApproved;
             this.CreatedDate = blogpost.CreatedDate;
             this.UpdatedDate = blogpost.UpdatedDate;
         }

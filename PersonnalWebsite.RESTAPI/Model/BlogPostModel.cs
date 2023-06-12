@@ -10,12 +10,13 @@ namespace PersonnalWebsite.RESTAPI.Model
         public string Author { get; set; }
         public Guid AuthorID { get; set; }
         public string Content { get; set; }
+        public bool IsApproved { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
 
         public BlogPostModel() { }
 
-        public BlogPostModel(Guid blogPostID, int blogPostLanguageID, string title, string author, Guid authorID, string content, DateTime createdDate, DateTime updatedDate)
+        public BlogPostModel(Guid blogPostID, int blogPostLanguageID, string title, string author, Guid authorID, string content, bool isApproved, DateTime createdDate, DateTime updatedDate)
         {
             BlogPostID = blogPostID;
             BlogPostLanguageID = blogPostLanguageID;
@@ -23,6 +24,7 @@ namespace PersonnalWebsite.RESTAPI.Model
             Author = author;
             AuthorID = authorID;
             Content = content;
+            IsApproved = IsApproved;
             CreatedDate = createdDate;
             UpdatedDate = updatedDate;
         }
@@ -37,6 +39,7 @@ namespace PersonnalWebsite.RESTAPI.Model
                 Author = this.Author,
                 AuthorID = this.AuthorID,
                 Content = this.Content,
+                IsApproved = this.IsApproved,
                 CreatedDate = this.CreatedDate,
                 UpdatedDate = this.UpdatedDate
             };
