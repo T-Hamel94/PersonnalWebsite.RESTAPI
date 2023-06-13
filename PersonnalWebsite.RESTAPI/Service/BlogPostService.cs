@@ -127,7 +127,7 @@ namespace PersonnalWebsite.RESTAPI.Service
 
             BlogPost blogPostToApprove = _blogPostRepo.GetBlogPostByID(blogPostID);
             blogPostToApprove.IsApproved = true;
-            BlogPost blogPostApproved = _blogPostRepo.UpdateBlogPost(blogPostToApprove);
+            BlogPost blogPostApproved = _blogPostRepo.ApproveBlogPost(blogPostToApprove);
 
             return blogPostApproved.ToModel();
         }

@@ -86,6 +86,29 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
             return existingBlogPost.ToEntity();
         }
 
+        public BlogPost ApproveBlogPost(BlogPost blogPost)
+        {
+            if (blogPost == null)
+            {
+                throw new ArgumentNullException(nameof(blogPost));
+            }
+
+            BlogPostSQLServer existingBlogPost = _dbContext.BlogPosts.Find(blogPost.BlogPostID);
+
+            if (existingBlogPost == null)
+            {
+                throw new BlogpostNotFoundException($"Could not find blogpost with id {blogPost.BlogPostID}");
+            }
+
+            existingBlogPost.IsApproved = blogPost.IsApproved;
+            existingBlogPost.UpdatedDate = DateTime.Now;
+
+            _dbContext.BlogPosts.Update(existingBlogPost);
+            _dbContext.SaveChanges();
+
+            return existingBlogPost.ToEntity();
+        }
+
         public void DeleteBlogPost(Guid blogPostID)
         {
             if (blogPostID == Guid.Empty)
