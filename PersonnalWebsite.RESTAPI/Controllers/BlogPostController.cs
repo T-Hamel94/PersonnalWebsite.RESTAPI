@@ -166,7 +166,40 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             catch (UnauthorizedActionException ex)
             {
                 Log.Warn($"UpdateBlogPost: {ex}");
-                return Forbid("Current logged in user does not have the authorization to update this blog post");
+                return StatusCode(StatusCodes.Status403Forbidden, "Current logged in user does not have the authorization to update this blog post");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"UpdateBlogPost: {ex}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the blog post.");
+            }
+        }
+
+        // PUT api/blogposts/{id}
+        [HttpPut("approve/{id}"), Authorize]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        public ActionResult<BlogPostModel> ApproveBlogPost(Guid id)
+        {
+            Guid loggedInUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            try
+            {
+                BlogPostModel updatedBlogPost = _blogPostService.ApproveBlogPost(loggedInUserId, id);
+
+                return Ok(updatedBlogPost);
+            }
+            catch (BlogpostNotFoundException ex)
+            {
+                Log.Info("UpdateBlogPost: The blog post to update could not be found");
+                return NotFound("The blog post could not be found");
+            }
+            catch (UnauthorizedActionException ex)
+            {
+                Log.Warn($"UpdateBlogPost: {ex}");
+                return StatusCode(StatusCodes.Status403Forbidden, "Current logged in user does not have the authorization to update this blog post");
             }
             catch (Exception ex)
             {

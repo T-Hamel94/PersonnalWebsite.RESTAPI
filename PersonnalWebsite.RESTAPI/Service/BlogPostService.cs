@@ -116,6 +116,22 @@ namespace PersonnalWebsite.RESTAPI.Service
             return blogPostUpdated.ToModel();
         }
 
+        public BlogPostModel ApproveBlogPost(Guid loggedInUserId, Guid blogPostID)
+        {
+            User loggedInUser = _userRepo.GetUserByID(loggedInUserId);
+
+            if (!loggedInUser.IsAdmin)
+            {
+                throw new UnauthorizedActionException($"User trying to approve {blogPostID} is not authorized");
+            }
+
+            BlogPost blogPostToApprove = _blogPostRepo.GetBlogPostByID(blogPostID);
+            blogPostToApprove.IsApproved = true;
+            BlogPost blogPostApproved = _blogPostRepo.UpdateBlogPost(blogPostToApprove);
+
+            return blogPostApproved.ToModel();
+        }
+
         public void DeleteBlogPost(Guid loggedInUserId, Guid blogPostID)
         {
             Guid originalAuthorID = _blogPostRepo.GetBlogPostByID(blogPostID).AuthorID;
