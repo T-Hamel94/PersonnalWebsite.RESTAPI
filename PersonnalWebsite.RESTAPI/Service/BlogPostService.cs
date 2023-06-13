@@ -76,6 +76,11 @@ namespace PersonnalWebsite.RESTAPI.Service
                 UpdatedDate = DateTime.Now
             };
 
+            if (authorFound.IsAdmin)
+            {
+                blogPostToCreate.IsApproved = true;
+            }
+
             BlogPost createdBlogPost = _blogPostRepo.CreateBlogPost(blogPostToCreate);
 
             if (createdBlogPost == null)

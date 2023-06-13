@@ -37,7 +37,7 @@ BEGIN
 		Author NVARCHAR(255) NOT NULL,
 		AuthorID UNIQUEIDENTIFIER,
 		Content NVARCHAR(MAX) NOT NULL,
-		IsApproved BIT, 
+		IsApproved BIT NOT NULL, 
 		CreatedAt DATETIME2 NOT NULL,
 		LastModifiedAt DATETIME2 NOT NULL
 	);
@@ -50,7 +50,7 @@ BEGIN
 INSERT INTO BlogPosts (BlogPostID, BlogPostLanguageID, Title, Author, AuthorID, Content, IsApproved, CreatedAt, LastModifiedAt) 
 VALUES 
 	(NEWID(), 1, 'The future of AI', 'John Doe','F040929F-7A59-4E88-92CC-D6800B365F6B', 'The future of AI is bright. This article explores...', 1,  GETDATE(), GETDATE()),
-	(NEWID(), 1, 'Quantum Computing', 'Jane Smith','F040929F-7A59-4E88-92CC-D6800B365F6B', 'Quantum computing is the next frontier...', GETDATE(), 1,  GETDATE()),
+	(NEWID(), 1, 'Quantum Computing', 'Jane Smith','F040929F-7A59-4E88-92CC-D6800B365F6B', 'Quantum computing is the next frontier...', 1,  GETDATE(),  GETDATE()),
 	(NEWID(), 1, 'The Rise of Blockchain', 'Alice Johnson','F040929F-7A59-4E88-92CC-D6800B365F6B', 'Blockchain technology is reshaping the world...', 1,  GETDATE(), GETDATE()),
 	(NEWID(), 1, 'Big Data Analysis', 'Bob Brown','F040929F-7A59-4E88-92CC-D6800B365F6B', 'Big data is becoming increasingly important...', 1, GETDATE(), GETDATE()),
 	(NEWID(), 1, 'Cybersecurity in 2023', 'Charlie Davis','F040929F-7A59-4E88-92CC-D6800B365F6B', 'In the age of digital information, cybersecurity is crucial...', 1, GETDATE(), GETDATE());

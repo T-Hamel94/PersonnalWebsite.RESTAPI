@@ -144,7 +144,7 @@ namespace PersonnalWebsite.RESTAPI.Test.Service
         }
 
         [Fact]
-        public void CreateBlogPost_ReturnsBlogPostModelAsNotApproved_WhenAuthorIsLoggedIn()
+        public void CreateBlogPost_ReturnsBlogPostModelAsNotApproved_WhenAuthorIsNotAdmin()
         {
             // Arrange
             User authorFound = UserHelper.GenerateUser();
@@ -156,7 +156,7 @@ namespace PersonnalWebsite.RESTAPI.Test.Service
             BlogPost createdBlogPost = blogPostToCreate.ToEntity();
 
             _mockUserRepo.Setup(repo => repo.GetUserByID(loggedInUserId)).Returns(authorFound);
-            _mockBlogPostRepo.Setup(repo => repo.CreateBlogPost(It.IsAny<BlogPost>())).Returns(createdBlogPost);
+            _mockBlogPostRepo.Setup(repo => repo.CreateBlogPost(It.IsAny<BlogPost>())).Returns((BlogPost bp) => bp);
 
             // Act
             BlogPostModel result = _blogPostService.CreateBlogPost(loggedInUserId, blogPostToCreate);
@@ -166,6 +166,31 @@ namespace PersonnalWebsite.RESTAPI.Test.Service
             result.Should().NotBeNull();
             result.IsApproved.Should().BeFalse();
         }
+
+        [Fact]
+        public void CreateBlogPost_ReturnsBlogPostModelAsApproved_WhenAuthorIsAdmin()
+        {
+            // Arrange
+            User authorFound = UserHelper.GenerateAdminUser();
+            Guid loggedInUserId = authorFound.Id;
+
+            BlogPostModel blogPostToCreate = BlogPostHelper.GenerateBlogPost().ToModel();
+            blogPostToCreate.AuthorID = loggedInUserId;
+            authorFound.Id = loggedInUserId;
+
+            _mockUserRepo.Setup(repo => repo.GetUserByID(loggedInUserId)).Returns(authorFound);
+            _mockBlogPostRepo.Setup(repo => repo.CreateBlogPost(It.IsAny<BlogPost>())).Returns((BlogPost bp) => bp); 
+
+            // Act
+            BlogPostModel result = _blogPostService.CreateBlogPost(loggedInUserId, blogPostToCreate);
+
+            // Assert
+            result.Should().BeAssignableTo<BlogPostModel>();
+            result.Should().NotBeNull();
+            result.IsApproved.Should().BeTrue();
+            _mockBlogPostRepo.Verify(repo => repo.CreateBlogPost(It.Is<BlogPost>(bp => bp.IsApproved == true)), Times.Once); 
+        }
+
 
         [Fact]
         public void CreateBlogPost_ThrowsArgumentNullException_WhenBlogPostIsNull()
