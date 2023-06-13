@@ -18,7 +18,14 @@ namespace PersonnalWebsite.RESTAPI.Service
 
         public IEnumerable<BlogPostModel> GetBlogPosts()
         {
-            IEnumerable<BlogPostModel> blogPostsModel = _blogPostRepo.GetBlogPosts().Select(bp => bp.ToModel());
+            IEnumerable<BlogPostModel> blogPostsModel = _blogPostRepo.GetBlogPosts().Select(bp => bp.ToModel()).Where(bp => bp.IsApproved == true);
+
+            return blogPostsModel;
+        }
+
+        public IEnumerable<BlogPostModel> GetUnapprovedBlogPosts()
+        {
+            IEnumerable<BlogPostModel> blogPostsModel = _blogPostRepo.GetBlogPosts().Select(bp => bp.ToModel()).Where(bp => bp.IsApproved == false);
 
             return blogPostsModel;
         }

@@ -15,18 +15,11 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
             _dbContext = DbContextGeneration.GetApplicationDBContext();
         }
 
-        public BlogPost CreateBlogPost(BlogPost blogPost)
+        public IEnumerable<BlogPost> GetBlogPosts()
         {
-            if(blogPost == null)
-            {
-                throw new ArgumentNullException(nameof(blogPost));
-            }
+            IEnumerable<BlogPost> posts = _dbContext.BlogPosts.Select(bp => bp.ToEntity());
 
-            BlogPostSQLServer blogPostSQLServer = new BlogPostSQLServer(blogPost);
-
-            _dbContext.Add(blogPostSQLServer);
-            _dbContext.SaveChanges();
-            return blogPost;
+            return posts;
         }
 
         public BlogPost GetBlogPostByID(Guid blogPostID)
@@ -46,19 +39,26 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
             return blogPost.ToEntity();
         }
 
-        public IEnumerable<BlogPost> GetBlogPosts()
-        {
-            IEnumerable<BlogPost> posts = _dbContext.BlogPosts.Select(bp => bp.ToEntity());
-
-            return posts;
-        }
-
         public IEnumerable<BlogPost> GetBlogPostsByUsername(string username)
         {
             IEnumerable<BlogPostSQLServer> blogPostsSqlServer = _dbContext.BlogPosts.Where(bp => bp.Author == username);
             IEnumerable<BlogPost> blogPosts = blogPostsSqlServer.Select(bp => bp.ToEntity());
 
             return blogPosts;
+        }
+
+        public BlogPost CreateBlogPost(BlogPost blogPost)
+        {
+            if (blogPost == null)
+            {
+                throw new ArgumentNullException(nameof(blogPost));
+            }
+
+            BlogPostSQLServer blogPostSQLServer = new BlogPostSQLServer(blogPost);
+
+            _dbContext.Add(blogPostSQLServer);
+            _dbContext.SaveChanges();
+            return blogPost;
         }
 
         public BlogPost UpdateBlogPost(BlogPost blogPost)

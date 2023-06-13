@@ -38,6 +38,24 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             }
         }
 
+        // GET api/blogposts
+        [HttpGet("unapproved"), Authorize]
+        [ProducesResponseType(200)]
+        public ActionResult<List<BlogPostModel>> GetUnapprovedBlogPosts()
+        {
+            try
+            {
+                IEnumerable<BlogPostModel> blogPosts = _blogPostService.GetUnapprovedBlogPosts();
+
+                return Ok(blogPosts.OrderBy(bp => bp.Author));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"GetBlogPosts: {ex}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occured while getting blog posts");
+            }
+        }
+
         // GET api/blogposts/{id}
         [HttpGet("id/{id}")]
         [ProducesResponseType(200)]

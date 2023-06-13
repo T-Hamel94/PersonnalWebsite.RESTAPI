@@ -5,6 +5,7 @@ namespace PersonnalWebsite.RESTAPI.Interfaces
     public interface IBlogPostService
     {
         public IEnumerable<BlogPostModel> GetBlogPosts();
+        public IEnumerable<BlogPostModel> GetUnapprovedBlogPosts();
         public BlogPostModel GetBlogPostByID(Guid blogPostID);
         public IEnumerable<BlogPostModel> GetBlogPostsByUsername(string username);
         public BlogPostModel CreateBlogPost(Guid loggedInUserId, BlogPostModel blogPost);
