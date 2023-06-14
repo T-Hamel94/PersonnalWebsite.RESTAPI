@@ -32,6 +32,7 @@ namespace PersonnalWebsite.RESTAPI.Test.TestHelper
                 AuthorID = Guid.NewGuid(),
                 Title = "The rise of the Unit tester",
                 Content = "There once was a crazy dev who was passionate about writing Unit Tests. He would unit test everything he could in his life. One day...",
+                IsApproved = true,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now
             };
@@ -45,6 +46,7 @@ namespace PersonnalWebsite.RESTAPI.Test.TestHelper
                 AuthorID = Guid.NewGuid(),
                 Title = "The Art of Debugging",
                 Content = "Debugging is an essential skill for every developer. In this blog post, we will explore various debugging techniques and best practices.",
+                IsApproved = false,
                 CreatedDate = DateTime.Now.AddDays(-2),
                 UpdatedDate = DateTime.Now.AddDays(-1)
             };
@@ -58,6 +60,7 @@ namespace PersonnalWebsite.RESTAPI.Test.TestHelper
                 AuthorID = Guid.NewGuid(),
                 Title = "Introduction to Machine Learning",
                 Content = "Machine Learning is revolutionizing various industries. In this blog post, we will provide a beginner-friendly introduction to machine learning concepts and algorithms.",
+                IsApproved = true,
                 CreatedDate = DateTime.Now.AddDays(-5),
                 UpdatedDate = DateTime.Now.AddDays(-3)
             };
@@ -71,6 +74,7 @@ namespace PersonnalWebsite.RESTAPI.Test.TestHelper
                 AuthorID = Guid.NewGuid(),
                 Title = "The Power of Networking",
                 Content = "Networking is crucial for personal and professional growth. In this blog post, we will discuss the benefits of networking and provide tips for effective networking.",
+                IsApproved = true,
                 CreatedDate = DateTime.Now.AddDays(-8),
                 UpdatedDate = DateTime.Now.AddDays(-6)
             };
@@ -84,6 +88,7 @@ namespace PersonnalWebsite.RESTAPI.Test.TestHelper
                 AuthorID = Guid.NewGuid(),
                 Title = "Web Development Best Practices",
                 Content = "Building high-quality web applications requires following best practices. In this blog post, we will cover essential web development best practices and guidelines.",
+                IsApproved = false,
                 CreatedDate = DateTime.Now.AddDays(-10),
                 UpdatedDate = DateTime.Now.AddDays(-9)
             };

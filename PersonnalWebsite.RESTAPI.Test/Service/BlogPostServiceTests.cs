@@ -32,7 +32,7 @@ namespace PersonnalWebsite.RESTAPI.Test.Service
 
         #region GetBlogPosts
         [Fact]
-        public void GetBlogPosts_ReturnsBlogPostModelList()
+        public void GetApprovedBlogPosts_ReturnsBlogPostModelList()
         {
             // Arrange
             _mockBlogPostRepo.Setup(repo => repo.GetBlogPosts()).Returns(_blogPosts);
@@ -43,17 +43,47 @@ namespace PersonnalWebsite.RESTAPI.Test.Service
             // Assert
             result.Should().BeAssignableTo<IEnumerable<BlogPostModel>>();
             result.Should().NotBeNull();
-            result.Should().HaveCount(5);
+            result.Should().HaveCount(3);
         }
 
         [Fact]
-        public void GetBlogPosts_ReceivedEmptyBlogPostList_ReturnsEmptyList()
+        public void GetApprovedBlogPosts_ReceivedEmptyBlogPostList_ReturnsEmptyList()
         {
             // Arrange
             _mockBlogPostRepo.Setup(repo => repo.GetBlogPosts()).Returns(new List<BlogPost>());
 
             // Act
             IEnumerable<BlogPostModel> result = _blogPostService.GetBlogPosts();
+
+            // Assert
+            result.Should().BeAssignableTo<IEnumerable<BlogPostModel>>();
+            result.Should().NotBeNull();
+            result.Should().HaveCount(0);
+        }
+
+        [Fact]
+        public void GetUnapprovedBlogPosts_ReturnsUnnaprovedBlogPostModelList()
+        {
+            // Arrange
+            _mockBlogPostRepo.Setup(repo => repo.GetBlogPosts()).Returns(_blogPosts);
+
+            // Act
+            IEnumerable<BlogPostModel> result = _blogPostService.GetUnapprovedBlogPosts();
+
+            // Assert
+            result.Should().BeAssignableTo<IEnumerable<BlogPostModel>>();
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void GetUnapprovedBlogPosts_ReceivedEmptyBlogPostList_ReturnsEmptyList()
+        {
+            // Arrange
+            _mockBlogPostRepo.Setup(repo => repo.GetBlogPosts()).Returns(new List<BlogPost>());
+
+            // Act
+            IEnumerable<BlogPostModel> result = _blogPostService.GetUnapprovedBlogPosts();
 
             // Assert
             result.Should().BeAssignableTo<IEnumerable<BlogPostModel>>();

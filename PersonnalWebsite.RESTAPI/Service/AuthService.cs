@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using PersonnalWebsite.RESTAPI.CustomExceptions;
 using PersonnalWebsite.RESTAPI.Entities;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
@@ -6,7 +7,6 @@ using System.Security.Claims;
 
 namespace PersonnalWebsite.RESTAPI.Service
 {
-    // Uses User and return UserModel
     public class AuthService : IAuthService
     {
         private IUserRepo _userRepo;
@@ -26,16 +26,12 @@ namespace PersonnalWebsite.RESTAPI.Service
 
             if(userLoginIn == null)
             {
-                // Log the error
-                // Add custom exceptions here
-                throw new Exception("The user trying to log in was not found");
+                throw new UserNotFoundException("The user trying to log in was not found");
             }
 
             if (!_passwordService.VerifyPasswordHash(password, userLoginIn.PasswordHash, userLoginIn.PasswordSalt))
             {
-                // Log the error
-                // Add custom exceptions here
-                throw new Exception("The password hash did not match");
+                throw new PasswordErrorException("The password hash did not match");
             }
 
             string JWT = CreateToken(userLoginIn);
@@ -52,8 +48,7 @@ namespace PersonnalWebsite.RESTAPI.Service
                 new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
             };
 
-            var symmetricSecurityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:TokenKey").Value));
+            var symmetricSecurityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:TokenKey").Value));
 
             var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature);
 

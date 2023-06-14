@@ -109,7 +109,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             catch (UnauthorizedActionException ex)
             {
                 Log.Warn($"CreateUser: {ex}");
-                return Forbid("Logged in user is not authorized to create another user");
+                return StatusCode(StatusCodes.Status403Forbidden, "Logged in user is not authorized to create another user");
             }
             catch (Exception ex)
             {
@@ -173,7 +173,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             catch (UnauthorizedActionException ex)
             {
                 Log.Warn("UpdateUsers: " + ex);
-                return Forbid("Unauthorized action");
+                return StatusCode(StatusCodes.Status403Forbidden, "Current logged in user does not have the authorization this user");
             }
             catch (Exception ex)
             {
@@ -212,7 +212,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             catch (UnauthorizedActionException ex)
             {
                 Log.Warn("DeleteUser: " + ex);
-                return Forbid("Unauthorized action");
+                return StatusCode(StatusCodes.Status403Forbidden, "Current logged in user does not have the authorization to delete this user");
             }
             catch (Exception ex)
             {

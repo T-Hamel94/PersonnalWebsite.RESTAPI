@@ -219,9 +219,12 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
             // Act
             ActionResult<BlogPostModel> actionResult = _blogPostController.CreateBlogPost(blogPostToCreate);
+            var forbiddenObjectResult = actionResult.Result as ObjectResult;
 
             // Assert
-            var forbidResult = Assert.IsType<ForbidResult>(actionResult.Result);
+            forbiddenObjectResult.Should().NotBeNull();
+            forbiddenObjectResult.Value.Should().Be("Current logged in user does not have the authorization to create this blog post");
+            forbiddenObjectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
         }
 
         [Fact]
@@ -365,9 +368,12 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
             // Act
             ActionResult<BlogPostModel> actionResult = _blogPostController.UpdateBlogPost(blogPostId, blogPostToUpdate);
+            var forbiddenObjectResult = actionResult.Result as ObjectResult;
 
             // Assert
-            var forbidResult = Assert.IsType<ForbidResult>(actionResult.Result);
+            forbiddenObjectResult.Should().NotBeNull();
+            forbiddenObjectResult.Value.Should().Be("Current logged in user does not have the authorization to update this blog post");
+            forbiddenObjectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
         }
 
         [Fact]
@@ -459,9 +465,12 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
             // Act
             IActionResult actionResult = _blogPostController.DeleteBlogPost(blogPostId);
+            var forbiddenObjectResult = actionResult as ObjectResult;
 
             // Assert
-            var forbidResult = Assert.IsType<ForbidResult>(actionResult);
+            forbiddenObjectResult.Should().NotBeNull();
+            forbiddenObjectResult.Value.Should().Be("Current logged in user does not have the authorization to delete this blog post");
+            forbiddenObjectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
         }
 
         [Fact]

@@ -21,6 +21,12 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         [Route("login")]
         public ActionResult<string> Login(UserLoginModel request)
         {
+            if (request is null)
+            {
+                Log.Info($"Login: Invalid login request");
+                return BadRequest("There was a problem with the login request");
+            }
+
             try
             {
                 string JSWToken = _authService.Login(request.Email, request.Password);

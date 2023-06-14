@@ -9,12 +9,10 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
     public class BlogPostSqlRepo : IBlogPostRepo
     {
         private ApplicationDbContext _dbContext;
-
         public BlogPostSqlRepo()
         {
             _dbContext = DbContextGeneration.GetApplicationDBContext();
         }
-
         public IEnumerable<BlogPost> GetBlogPosts()
         {
             IEnumerable<BlogPost> posts = _dbContext.BlogPosts.Select(bp => bp.ToEntity());

@@ -8,6 +8,7 @@ using PersonnalWebsite.RESTAPI.Model;
 using PersonnalWebsite.RESTAPI.Test.TestHelper;
 using Microsoft.AspNetCore.Http;
 using PersonnalWebsite.RESTAPI.CustomExceptions;
+using PersonnalWebsite.RESTAPI.Entities;
 
 namespace PersonnalWebsite.RESTAPI.Test.Controllers
 {
@@ -139,10 +140,12 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
             // Act
             ActionResult<UserModel> actionResult = _userController.CreateUser(newUser);
-            var forbidResult = actionResult.Result as ForbidResult;
+            var forbiddenObjectResult = actionResult.Result as ObjectResult;
 
             // Assert
-            forbidResult.Should().NotBeNull();
+            forbiddenObjectResult.Should().NotBeNull();
+            forbiddenObjectResult.Value.Should().Be("Logged in user is not authorized to create another user");
+            forbiddenObjectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
         }
 
         [Fact]
@@ -307,9 +310,12 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
             // Act
             ActionResult<UserModel> actionResult = _userController.UpdateUser(userToUpdate);
+            var forbiddenObjectResult = actionResult.Result as ObjectResult;
 
             // Assert
-            var forbidResult = Assert.IsType<ForbidResult>(actionResult.Result);
+            forbiddenObjectResult.Should().NotBeNull();
+            forbiddenObjectResult.Value.Should().Be("Current logged in user does not have the authorization this user");
+            forbiddenObjectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
         }
 
         [Fact]
@@ -423,11 +429,13 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
             _mockUserService.Setup(service => service.DeleteUser(loggedInUserId, userToDeleteId)).Throws(new UnauthorizedActionException());
 
             // Act
-            var actionResult = _userController.DeleteUser(userToDeleteId);
+            IActionResult actionResult = _userController.DeleteUser(userToDeleteId);
+            var forbiddenObjectResult = actionResult as ObjectResult;
 
             // Assert
-            var forbidResult = actionResult as ForbidResult;
-            forbidResult.Should().NotBeNull();
+            forbiddenObjectResult.Should().NotBeNull();
+            forbiddenObjectResult.Value.Should().Be("Current logged in user does not have the authorization to delete this user");
+            forbiddenObjectResult.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
         }
 
         [Fact]

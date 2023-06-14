@@ -231,7 +231,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             catch (UnauthorizedActionException ex)
             {
                 Log.Warn($"DeleteBlogPost: {ex}");
-                return Forbid("Current logged in user does not have the authorization to delete this blog post");
+                return StatusCode(StatusCodes.Status403Forbidden, "Current logged in user does not have the authorization to delete this blog post");
             }
             catch (Exception ex)
             {
