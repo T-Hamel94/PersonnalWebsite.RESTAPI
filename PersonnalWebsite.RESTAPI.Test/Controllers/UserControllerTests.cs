@@ -8,7 +8,6 @@ using PersonnalWebsite.RESTAPI.Model;
 using PersonnalWebsite.RESTAPI.Test.TestHelper;
 using Microsoft.AspNetCore.Http;
 using PersonnalWebsite.RESTAPI.CustomExceptions;
-using PersonnalWebsite.RESTAPI.Entities;
 
 namespace PersonnalWebsite.RESTAPI.Test.Controllers
 {
@@ -102,12 +101,12 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
             // Act
             ActionResult<UserModel> actionResult = _userController.CreateUser(newUser);
-            var createdAtActionResult = actionResult.Result as CreatedAtActionResult;
+            var createdResult = actionResult.Result as CreatedResult;
 
             // Assert
-            createdAtActionResult.Should().NotBeNull();
-            createdAtActionResult.Should().BeOfType<CreatedAtActionResult>();
-            var returnedUser = createdAtActionResult.Value as UserModel;
+            createdResult.Should().NotBeNull();
+            createdResult.Should().BeOfType<CreatedResult>();
+            var returnedUser = createdResult.Value as UserModel;
             returnedUser.Should().BeEquivalentTo(newUser);
         }
         [Fact]
@@ -174,7 +173,7 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
         #region RegisterUser
         [Fact]
-        public void RegisterUser_ReturnsCreatedAtActionResult_WithUserModel_WhenRegistrationIsSuccessful()
+        public void RegisterUser_ReturnsCreatedResult_WithUserModel_WhenRegistrationIsSuccessful()
         {
             // Arrange
             UserModel newUser = UserHelper.GenerateUser().ToModel();
@@ -184,12 +183,12 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
             // Act
             ActionResult<UserModel> actionResult = _userController.RegisterUser(newUserRegistration);
-            var createdAtResult = actionResult.Result as CreatedAtActionResult;
+            var createdResult = actionResult.Result as CreatedResult;
 
             // Assert
-            createdAtResult.Should().NotBeNull();
-            createdAtResult.Should().BeOfType<CreatedAtActionResult>();
-            var registeredUser = createdAtResult.Value as UserModel;
+            createdResult.Should().NotBeNull();
+            createdResult.Should().BeOfType<CreatedResult>();
+            var registeredUser = createdResult.Value as UserModel;
             registeredUser.Should().BeEquivalentTo(newUser);
         }
 

@@ -186,8 +186,40 @@ namespace PersonnalWebsite.RESTAPI.Test.Service
             _mockUserRepo.Verify(repo => repo.CreateUser(It.IsAny<User>()), Times.Once);
         }
 
-
         delegate void PasswordHashSaltCallback(string password, out byte[] hash, out byte[] salt);
+
+        [Fact]
+        public void RegisterUser_UsernameAlreadyExists_ThrowsUserAlreadyExistsException()
+        {
+            // Arrange
+            UserRegistrationModel user = UserHelper.GenerateUserRegistrationModel();
+
+            _mockUserRepo.Setup(repo => repo.UserExistsByUsername(user.Username)).Returns(true);
+
+            // Act
+            Exception exception = Record.Exception(() => _userService.RegisterUser(user));
+
+            // Assert
+            Assert.NotNull(exception);
+            Assert.IsType<UserAlreadyExistsException>(exception);
+        }
+
+        [Fact]
+        public void RegisterUser_EmailAlreadyExists_ThrowsUserAlreadyExistsException()
+        {
+            // Arrange
+            UserRegistrationModel user = UserHelper.GenerateUserRegistrationModel();
+
+            _mockUserRepo.Setup(repo => repo.UserExistsByEmail(user.Email)).Returns(true);
+
+            // Act
+            Exception exception = Record.Exception(() => _userService.RegisterUser(user));
+
+            // Assert
+            Assert.NotNull(exception);
+            Assert.IsType<UserAlreadyExistsException>(exception);
+        }
+
         #endregion
 
         #region UpdateUser

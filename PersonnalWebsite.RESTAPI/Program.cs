@@ -1,9 +1,10 @@
 using log4net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PersonnalWebsite.RESTAPI.Data.Context;
-using PersonnalWebsite.RESTAPI.Data.Repo.SQLServer;
+using PersonnalWebsite.RESTAPI.Data.Repo.SQLServerRepo;
 using PersonnalWebsite.RESTAPI.Interfaces;
 using PersonnalWebsite.RESTAPI.Service;
 using System.Reflection;
@@ -27,7 +28,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .GetBytes(builder.Configuration.GetSection("AppSettings:TokenKey").Value)),
             ValidateIssuer = false,
             ValidateAudience = false
-        };      
+        };
     });
 
 // Db Context
@@ -39,7 +40,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "MyAllowSpecificOrigins",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000")
+            builder.WithOrigins("http://localhost:3000", "http://localhost")
             .AllowAnyHeader()
             .AllowAnyMethod();
         });
@@ -63,22 +64,41 @@ var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4n
 
 log4net.Config.XmlConfigurator.Configure(repo, log4NetConfig["log4net"]);
 
+ILog log = LogManager.GetLogger(typeof(Program));
 
-// Configure the HTTP request pipeline.
-if (webApp.Environment.IsDevelopment())
+try
 {
-    webApp.UseSwagger();
-    webApp.UseSwaggerUI();
+    log.Info("Starting application");
+
+    // Configure the HTTP request pipeline.
+    if (webApp.Environment.IsDevelopment())
+    {
+        webApp.UseSwagger();
+        webApp.UseSwaggerUI();
+    }
+
+    webApp.UseExceptionHandler(errorApp =>
+    {
+        errorApp.Run(async context =>
+        {
+            var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+            var exception = exceptionHandlerPathFeature?.Error;
+            log.Error("An unhandled exception occurred while processing the request", exception);
+        });
+    });
+
+    webApp.UseCors("MyAllowSpecificOrigins");
+    webApp.UseHttpsRedirection();
+    webApp.UseAuthentication();
+    webApp.UseAuthorization();
+    webApp.MapControllers();
+
+    log.Info("Finished starting web application");
+
+    webApp.Run();
 }
-
-webApp.UseCors("MyAllowSpecificOrigins");
-
-webApp.UseHttpsRedirection();
-
-webApp.UseAuthentication();
-
-webApp.UseAuthorization();
-
-webApp.MapControllers();
-
-webApp.Run();
+catch (Exception ex)
+{
+    log.Error("An error occurred while setting up the application", ex);
+    throw;
+}

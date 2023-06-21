@@ -5,7 +5,6 @@ using PersonnalWebsite.RESTAPI.Model;
 
 namespace PersonnalWebsite.RESTAPI.Service
 {
-    // Uses User and returns UserModel
     public class UserService : IUserService
     {
         private IUserRepo _userRepo;
@@ -40,6 +39,11 @@ namespace PersonnalWebsite.RESTAPI.Service
 
         public UserModel RegisterUser(UserRegistrationModel model)
         {
+            if (_userRepo.UserExistsByEmail(model.Email) || _userRepo.UserExistsByUsername(model.Username))
+            {
+                throw new UserAlreadyExistsException($"User with the username: {model.Username} or the email: {model.Email} Already exists");
+            }
+
             _passwordService.CreatePasswordHash(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             User newUser = new User()
@@ -56,7 +60,7 @@ namespace PersonnalWebsite.RESTAPI.Service
                 CreatedAt = DateTime.Now,
                 LastModifiedAt = DateTime.Now
             };
-
+            
             _userRepo.CreateUser(newUser);
 
             return newUser.ToModel();
@@ -66,7 +70,7 @@ namespace PersonnalWebsite.RESTAPI.Service
         {
             User loggedInUser = GetUserByID(loggedInUserId)?.ToEntity();
 
-            if (!loggedInUser.IsAdmin)
+            if (loggedInUser != null && !loggedInUser.IsAdmin)
             {
                 throw new UnauthorizedActionException("Only an admin user can create a user without using registration");
             }

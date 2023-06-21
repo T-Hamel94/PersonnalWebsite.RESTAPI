@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PersonnalWebsite.RESTAPI.Data.SQLServer;
+using PersonnalWebsite.RESTAPI.Data.SQLServerEntity;
 
 namespace PersonnalWebsite.RESTAPI.Data.Context
 {

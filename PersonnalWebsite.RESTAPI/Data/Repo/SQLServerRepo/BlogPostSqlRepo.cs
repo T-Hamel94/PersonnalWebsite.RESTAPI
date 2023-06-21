@@ -1,10 +1,10 @@
 ﻿using PersonnalWebsite.RESTAPI.CustomExceptions;
 using PersonnalWebsite.RESTAPI.Data.Context;
-using PersonnalWebsite.RESTAPI.Data.SQLServer;
+using PersonnalWebsite.RESTAPI.Data.SQLServerEntity;
 using PersonnalWebsite.RESTAPI.Entities;
 using PersonnalWebsite.RESTAPI.Interfaces;
 
-namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
+namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServerRepo
 {
     public class BlogPostSqlRepo : IBlogPostRepo
     {

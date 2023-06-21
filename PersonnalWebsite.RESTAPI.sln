@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonnalWebsite.RESTAPI", "PersonnalWebsite.RESTAPI\PersonnalWebsite.RESTAPI.csproj", "{CD204C38-8C62-468B-B166-CE4C26DFE44E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonnalWebsite.RESTAPI.Test", "PersonnalWebsite.RESTAPI.Test\PersonnalWebsite.RESTAPI.Test.csproj", "{D6F75E52-1B08-42C7-A6C9-FF21A8F53908}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonnalWebsite.RESTAPI.Test", "PersonnalWebsite.RESTAPI.Test\PersonnalWebsite.RESTAPI.Test.csproj", "{D6F75E52-1B08-42C7-A6C9-FF21A8F53908}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

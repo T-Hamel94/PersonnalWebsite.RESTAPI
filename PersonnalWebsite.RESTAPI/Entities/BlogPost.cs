@@ -1,4 +1,4 @@
-﻿using PersonnalWebsite.RESTAPI.Data.SQLServer;
+﻿using PersonnalWebsite.RESTAPI.Data.SQLServerEntity;
 using PersonnalWebsite.RESTAPI.Model;
 
 namespace PersonnalWebsite.RESTAPI.Entities

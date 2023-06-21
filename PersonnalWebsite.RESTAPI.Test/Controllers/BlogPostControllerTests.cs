@@ -179,7 +179,7 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
         #region CreateBlogpost
         [Fact]
-        public void CreateBlogPost_ReturnsCreatedAtActionResult_WhenBlogPostIsSuccessfullyCreated()
+        public void CreateBlogPost_ReturnsCreatedResult_WhenBlogPostIsSuccessfullyCreated()
         {
             // Arrange
             BlogPostModel blogPostToCreate = BlogPostHelper.GenerateBlogPost().ToModel();
@@ -194,13 +194,11 @@ namespace PersonnalWebsite.RESTAPI.Test.Controllers
 
             // Act
             ActionResult<BlogPostModel> actionResult = _blogPostController.CreateBlogPost(blogPostToCreate);
-            var createdAtActionResult = actionResult.Result as CreatedAtActionResult;
+            var createdResult = actionResult.Result as CreatedResult;
 
             // Assert
-            createdAtActionResult.Should().NotBeNull();
-            createdAtActionResult.Value.Should().BeEquivalentTo(blogPostToCreate);
-            createdAtActionResult.ActionName.Should().Be(nameof(_blogPostController.GetBlogPostById));
-            createdAtActionResult.RouteValues["id"].Should().Be(blogPostToCreate.BlogPostID);
+            createdResult.Should().NotBeNull();
+            createdResult.Value.Should().BeEquivalentTo(blogPostToCreate);
         }
 
         [Fact]

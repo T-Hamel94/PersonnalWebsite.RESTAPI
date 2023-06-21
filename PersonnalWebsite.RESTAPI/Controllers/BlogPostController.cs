@@ -117,7 +117,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             try
             {
                 var createdBlogPost = _blogPostService.CreateBlogPost(loggedInUserId, blogPost);
-                return CreatedAtAction(nameof(GetBlogPostById), new { id = createdBlogPost.BlogPostID }, createdBlogPost);
+                return Created("", createdBlogPost);
             }
             catch (UnauthorizedActionException ex)
             {

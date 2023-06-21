@@ -8,7 +8,6 @@ using System.Security.Claims;
 
 namespace PersonnalWebsite.RESTAPI.Controllers
 {
-    // Received User from the Service class and returns UserModel
     [Route("api/Users")]
     [ApiController]
     public class UserController : ControllerBase
@@ -104,7 +103,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             try
             {
                 UserModel createdUser = _userService.CreateUser(loggedInUserId, newUser);
-                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+                return Created("", createdUser);
             }
             catch (UnauthorizedActionException ex)
             {
@@ -122,6 +121,7 @@ namespace PersonnalWebsite.RESTAPI.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(409)]
         [Route("register")]
         public ActionResult<UserModel> RegisterUser(UserRegistrationModel newUser)
         {
@@ -134,7 +134,12 @@ namespace PersonnalWebsite.RESTAPI.Controllers
             try
             {
                 UserModel createdUser = _userService.RegisterUser(newUser);
-                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+                return Created("", createdUser);
+            }
+            catch (UserAlreadyExistsException ex)
+            {
+                Log.Error("Register: " + ex);
+                return Conflict("A user with the given username or email already exists");
             }
             catch (Exception ex)
             {

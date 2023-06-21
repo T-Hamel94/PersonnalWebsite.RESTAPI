@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PersonnalWebsite.RESTAPI.Data.SQLServer
+namespace PersonnalWebsite.RESTAPI.Data.SQLServerEntity
 {
     [Table("Users")]
     public class UserSQLServer

@@ -1,10 +1,10 @@
 ﻿using PersonnalWebsite.RESTAPI.CustomExceptions;
 using PersonnalWebsite.RESTAPI.Data.Context;
-using PersonnalWebsite.RESTAPI.Data.SQLServer;
+using PersonnalWebsite.RESTAPI.Data.SQLServerEntity;
 using PersonnalWebsite.RESTAPI.Entities;
 using PersonnalWebsite.RESTAPI.Interfaces;
 
-namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
+namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServerRepo
 {
     // Uses UserSqlDTO and returns User
     public class UserSqlRepo : IUserRepo
@@ -71,6 +71,26 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServer
             }
 
             return userSQLDTO.ToEntity();
+        }
+
+        public bool UserExistsByEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
+            return _dbContext.Users.Any(u => u.Email == email);
+        }
+
+        public bool UserExistsByUsername(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentNullException(nameof(username));
+            }
+
+            return _dbContext.Users.Any(u => u.Email == username);
         }
 
         public User CreateUser(User user)
