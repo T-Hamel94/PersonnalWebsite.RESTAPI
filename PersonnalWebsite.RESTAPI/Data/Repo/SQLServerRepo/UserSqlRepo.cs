@@ -90,7 +90,7 @@ namespace PersonnalWebsite.RESTAPI.Data.Repo.SQLServerRepo
                 throw new ArgumentNullException(nameof(username));
             }
 
-            return _dbContext.Users.Any(u => u.Email == username);
+            return _dbContext.Users.Any(u => u.Username == username);
         }
 
         public User CreateUser(User user)
